@@ -34,6 +34,7 @@ class FrontController {
         $paramsFromGET = array();
         //var_dump(Route::getRouters());
         foreach(Route::getRouters() as $route){
+            $paramsFromGET = array();
             if($route['method'] != $_SERVER['REQUEST_METHOD'] ){
                 continue;
             }
@@ -137,7 +138,7 @@ class FrontController {
         $split = explode(':', $paramFromRoute);
         if(!isset($split[1])) {
             return true;
-        }echo($paramFromUrl);
+        }
         if(Common::startsWith($split[1], 'int')) {
             return is_numeric($paramFromUrl) && $paramFromUrl == ceil($paramFromUrl);
         }

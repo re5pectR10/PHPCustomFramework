@@ -8,7 +8,9 @@ class UsersController {
     public function EditUser2($sas, $sss){
         echo $sas;echo $sss;
     }
-
+    public function EditUser3($id){
+        echo 'oooooooooooooooooooo';
+    }
     public function index2(){
         View::make('test')
             ->with('username', 'aaaaaaaazzzzzzzz')
