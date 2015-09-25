@@ -20,9 +20,9 @@ class App {
 
     private function __construct() {
         //set_exception_handler(array($this, '_exceptionHandler'));
-        \FW\Loader::registerNamespace('FW', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-        \FW\Loader::registerAutoLoad();
-        $this->_config = \FW\Config::getInstance();
+        Loader::registerNamespace('FW', dirname(__FILE__) . DIRECTORY_SEPARATOR);
+        Loader::registerAutoLoad();
+        $this->_config = Config::getInstance();
         //if config folder is not set, use defaultone
         if ($this->_config->getConfigFolder() == null) {
             $this->setConfigFolder('../config');
@@ -60,11 +60,11 @@ class App {
         if ($this->_config->getConfigFolder() == null) {
             $this->setConfigFolder('../app/config');
         }
-        $this->_frontController = \FW\FrontController::getInstance();
-        if ($this->router instanceof \FW\Routers\IRouter) {
+        $this->_frontController = FrontController::getInstance();
+        if ($this->router instanceof Routers\IRouter) {
             $this->_frontController->setRouter($this->router);
         } else {
-            $this->_frontController->setRouter(new \FW\Routers\DefaultRouter());
+            $this->_frontController->setRouter(new Routers\DefaultRouter());
         }
 
         /*$_sess = $this->_config->app['session'];
@@ -79,6 +79,7 @@ class App {
             }
             $this->setSession($_s);
         }*/
+// Auth::setSess = $_SESSION;
 
         $this->_frontController->dispatch();
     }
@@ -89,7 +90,7 @@ class App {
 
     /**
      * 
-    // * @return \GF\Session\ISession
+    // * @return \FW\Session\ISession
      */
     public function getSession() {
         return $this->_session;
@@ -97,7 +98,7 @@ class App {
 
     public function getDBConnection($connection = 'default') {
         if (!$connection) {
-            throw new \Exception('No connection identifier providet', 500);
+            throw new \Exception('No connection identifier provider', 500);
         }
         if ($this->_dbConnections[$connection]) {
             return $this->_dbConnections[$connection];
@@ -118,7 +119,7 @@ class App {
      */
     public static function getInstance() {
         if (self::$_instance == null) {
-            self::$_instance = new \FW\App();
+            self::$_instance = new App();
         }
         return self::$_instance;
     }
@@ -133,10 +134,10 @@ class App {
 
     public function displayError($error) {
         try {
-            $view = \FW\View::getInstance();
+            $view = View::getInstance();
             $view->display('errors.' . $error);
         } catch (\Exception $exc) {
-            \FW\Common::headerStatus($error);
+            Common::headerStatus($error);
             echo '<h1>' . $error . '</h1>';
             exit;
         }

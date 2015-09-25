@@ -1,6 +1,7 @@
 <?php
 
 namespace Controllers;
+use FW\View;
 
 class UsersController {
 
@@ -9,8 +10,12 @@ class UsersController {
     }
 
     public function index2(){
-        $view=  \FW\View::getInstance();
-        $view->display('test',array('c'=>array(1,2,3,4,8)),false);
+        View::make('test')
+            ->with('username', 'aaaaaaaazzzzzzzz')
+            //->appendTemplateToLayout('body','admin.index')
+            //->appendTemplateToLayout('body2','index')
+            ->with('data', array(1,2,3,4,8))
+            ->render();
     }
     public function testmethod($test1, $a, $paka='1111111'){
         echo $test1;

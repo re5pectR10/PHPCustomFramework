@@ -32,7 +32,11 @@ class Common {
         }
         return $data;
     }
-    
+
+    public static function getBaseURL() {
+        return $_SERVER["REQUEST_SCHEME"] . '://'.$_SERVER["HTTP_HOST"].$_SERVER["SCRIPT_NAME"];
+    }
+
     /**
      * Code is taken from https://gist.github.com/1098477
      * @param type $data

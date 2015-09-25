@@ -64,7 +64,7 @@ class InputData {
     public function get($id, $normalize = null, $default = null) {
         if ($this->hasGet($id)) {
             if ($normalize != null) {
-                return \FW\Common::normalize($this->_get[$id], $normalize);
+                return Common::normalize($this->_get[$id], $normalize);
             }
             return $this->_get[$id];
         }
@@ -74,7 +74,7 @@ class InputData {
     public function post($name, $normalize = null, $default = null) {
         if ($this->hasPost($name)) {
             if ($normalize != null) {
-                return \FW\Common::normalize($this->_post[$name], $normalize);
+                return Common::normalize($this->_post[$name], $normalize);
             }
             return $this->_post[$name];
         }
@@ -84,7 +84,7 @@ class InputData {
     public function cookies($name, $normalize = null, $default = null) {
         if ($this->hasCookies($name)) {
             if ($normalize != null) {
-                return \FW\Common::normalize($this->_cookies[$name], $normalize);
+                return Common::normalize($this->_cookies[$name], $normalize);
             }
             return $this->_cookies[$name];
         }
@@ -93,11 +93,11 @@ class InputData {
 
     /**
      * 
-     * @return \GF\InputData
+     * @return \FW\InputData
      */
     public static function getInstance() {
         if (self::$_instance == null) {
-            self::$_instance = new \FW\InputData();
+            self::$_instance = new InputData();
         }
         return self::$_instance;
     }

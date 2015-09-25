@@ -21,7 +21,7 @@ class FrontController {
         return $this->router;
     }
 
-    public function setRouter(\FW\Routers\IRouter $router) {
+    public function setRouter(Routers\IRouter $router) {
         $this->router = $router;
     }
 
@@ -69,7 +69,7 @@ class FrontController {
                 if(count($uriParams)-1 == $i) {
                     //echo($route['details']['use']);
                     $controllerData = explode('@', $route['details']['use']);
-                    $controllerName = \FW\App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.$controllerData[0];
+                    $controllerName = App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.$controllerData[0];
                     $controllerMethod = $controllerData[1];
                     break 2;
                 }
@@ -78,18 +78,18 @@ class FrontController {
             $paramsFromGET = array();
         }
         if($controllerMethod === '') {
-            if(\FW\App::getInstance()->getConfig()->app['enable_default_routing']) {
-                $controllerName = \FW\App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.$uriParams[0].'Controller';
+            if(App::getInstance()->getConfig()->app['enable_default_routing']) {
+                $controllerName = App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.$uriParams[0].'Controller';
                 $controllerMethod = $uriParams[1];
                 for($i = 2; $i < count($uriParams); $i++) {
                     array_push($paramsFromGET, $uriParams[$i]);
                 }
             } else {
-                $controllerName = \FW\App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.\FW\App::getInstance()->getConfig()->app['default_controller'];
-                $controllerMethod = \FW\App::getInstance()->getConfig()->app['default_method'];
+                $controllerName = App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.App::getInstance()->getConfig()->app['default_controller'];
+                $controllerMethod = App::getInstance()->getConfig()->app['default_method'];
             }
         }
-        $input =  \FW\InputData::getInstance();
+        $input =  InputData::getInstance();
         $input->setGet($paramsFromGET);
         $input->setPost($_POST);
 
@@ -170,7 +170,7 @@ class FrontController {
     }
 
     public function getDefaultController() {
-        $controler = \FW\App::getInstance()->getConfig()->app['default_controller'];
+        $controler = App::getInstance()->getConfig()->app['default_controller'];
         if ($controler) {
             return strtolower($controler);
         }
@@ -178,7 +178,7 @@ class FrontController {
     }
 
     public function getDefaultMethod() {
-        $method = \FW\App::getInstance()->getConfig()->app['default_method'];
+        $method = App::getInstance()->getConfig()->app['default_method'];
         if ($method) {
             return strtolower($method);
         }
@@ -191,7 +191,7 @@ class FrontController {
      */
     public static function getInstance() {
         if (self::$_instance == null) {
-            self::$_instance = new \FW\FrontController();
+            self::$_instance = new FrontController();
         }
         return self::$_instance;
     }
