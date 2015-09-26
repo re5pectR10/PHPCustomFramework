@@ -125,7 +125,7 @@ class App {
     }
     
     public function _exceptionHandler(\Exception $ex) {        
-        if ($this->_config && $this->_config->app['displayExceptions'] == true) {
+        if ($this->_config && $this->_config->app['debug'] == true) {
             echo '<pre>' . print_r($ex, true) . '</pre>';
         } else {
             $this->displayError($ex->getCode());
@@ -134,8 +134,7 @@ class App {
 
     public function displayError($error) {
         try {
-            $view = View::getInstance();
-            $view->display('errors.' . $error);
+            View::make('errors.' . $error)->render();
         } catch (\Exception $exc) {
             Common::headerStatus($error);
             echo '<h1>' . $error . '</h1>';
@@ -148,6 +147,4 @@ class App {
             $this->_session->saveSession();
         }
     }
-
 }
-

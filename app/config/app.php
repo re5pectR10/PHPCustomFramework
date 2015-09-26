@@ -1,6 +1,8 @@
 <?php
 return array(
 
+    'debug' => true,
+
     'default_controller' => 'UsersController',
 
     'default_method' => 'index2',

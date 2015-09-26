@@ -36,12 +36,20 @@ class Form {
         return self::getInputFormElement('hidden', $options);
     }
 
+    public static function file(array $options = array()) {
+        return self::getInputFormElement('file', $options);
+    }
+
     public static function submit(array $options = array()) {
         return self::getInputFormElement('submit', $options);
     }
 
-    public static function textarea(array $options = array()) {
-        return '<textarea' . self::getAttributesAsString($options) . '></textarea>';
+    public static function textarea($text = '', array $options = array()) {
+        return self::getElementWithClosingTad('textarea', $text, $options);
+    }
+
+    public static function label($text = '', array $options = array()) {
+        return self::getElementWithClosingTad('label', $text, $options);
     }
 
     public static function select(array $options = array(), array $elements = array()) {
@@ -58,7 +66,14 @@ class Form {
     }
 
     public static function csrf() {
+        return self::hidden(array(
+            'name' => '_token',
+            'value' => ''
+        ));
+    }
 
+    private static function getElementWithClosingTad($tag, $text = '', array $options = array()) {
+        return '<' . $tag . self::getAttributesAsString($options) . '>' . $text . '</' . $tag . '>';
     }
 
     private static function getInputFormElement($type, array $options = array()) {
