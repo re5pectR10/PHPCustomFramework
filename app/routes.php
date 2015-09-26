@@ -1,8 +1,11 @@
 <?php
 use \FW\Route;
 
-Route::GET('helppage', array('use'=>'HelpPageController@index'));
-Route::GET('helppage/{index:int}', array('use'=>'HelpPageController@getItem'));
+Route::Group('helppage', array(), function() {
+    Route::GET('', array('use'=>'HelpPageController@index'));
+    Route::GET('/{index:int}', array('use'=>'HelpPageController@getItem'));
+});
+
 
 Route::GET('users/{id:int}/edit', array('use'=>'UsersController@EditUser3','before'=>'csrf|auth'));
 //Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));

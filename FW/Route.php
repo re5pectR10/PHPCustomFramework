@@ -27,7 +27,7 @@ class Route {
         if ($func instanceof \Closure) {
             self::$prefix .= $prefix;
             call_user_func($func);
-            substr(self::$prefix, 0, strlen($prefix));
+            self::$prefix = substr(self::$prefix, 0, strlen(self::$prefix) - strlen($prefix));
         } else {
             throw new \Exception('Invalid routes function', 500);
         }

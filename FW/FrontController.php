@@ -30,7 +30,7 @@ class FrontController {
     public function dispatch(){
         $_uri = $this->router->getURI();
         //var_dump($_uri);
-        $uriParams = explode('/', $_uri);
+        $uriParams = array_filter(explode('/', $_uri), 'strlen');
         $controllerName = '';
         $controllerMethod = '';
         $paramsFromGET = array();
@@ -43,7 +43,7 @@ class FrontController {
 
             // todo if auth
 
-            $routeParams = explode('/', $route['url']);
+            $routeParams = array_filter(explode('/', $route['url']), 'strlen');
             $nonRequiredFieldsForRoute = $this->getNonRequiredFieldsCount($routeParams);
             if(count($uriParams) < count($routeParams) - $nonRequiredFieldsForRoute || count($uriParams) > count($routeParams)) {
                 continue;
