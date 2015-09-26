@@ -52,6 +52,24 @@ class Form {
         return self::getElementWithClosingTad('label', $text, $options);
     }
 
+    public static function script($src = '', array $options = array()) {
+        if (Common::startsWith($src, 'http')) {
+            $options['src'] = $src;
+        } else {
+            $options['src'] = Common::getBaseDir() . $src;
+        }
+
+        return self::getElementWithClosingTad('script', '', $options);
+    }
+
+    public static function style($src = '', array $options = array()) {
+        if (!Common::startsWith($src, 'http')) {
+            $src = Common::getBaseDir() . $src;
+        }
+        $options['rel'] = 'stylesheet';
+        return '<link href="' . $src . '"' . self::getAttributesAsString($options) . '>';
+    }
+
     public static function select(array $options = array(), array $elements = array()) {
         $output = '<select' . self::getAttributesAsString($options) . '>';
         foreach ($elements as $el) {

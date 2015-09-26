@@ -37,6 +37,13 @@ class Common {
         return $_SERVER["REQUEST_SCHEME"] . '://'.$_SERVER["HTTP_HOST"].$_SERVER["SCRIPT_NAME"];
     }
 
+    public static function getBaseDir() {
+        if (self::endsWith(self::getBaseURL(), 'index.php')) {
+            return substr(self::getBaseURL(), 0, strlen(self::getBaseURL()) - strlen('index.php'));
+        }
+        return self::getBaseURL();
+    }
+
     /**
      * Code is taken from https://gist.github.com/1098477
      * @param type $data

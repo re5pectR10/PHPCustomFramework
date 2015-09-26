@@ -2,6 +2,8 @@
 
 namespace FW;
 
+use Controllers\test;
+
 class FrontController {
 
     private static $_instance = null;
@@ -125,6 +127,14 @@ class FrontController {
         //if ($methodRequiredparams != count($paramsFromGET) + )
         //var_dump($method->getParameters()[0]);
         //var_dump(extract($requestInput));
+
+//$help=new HelpPage(Route::getRouters());
+//        $h = $help->getData();
+//        foreach($h as $m) {
+//            echo '<h1>'.$m['url'].'</h1>';
+//            echo '<h3>'.$m['method'].'</h3>';
+//            echo '<pre>'.$m['params'].'</pre>';
+//        }
 
         if($methodRequiredParams > count($requestInput)) {
             //throw new \Exception('parameters in the request not equal to parameters declared in method', 500);
