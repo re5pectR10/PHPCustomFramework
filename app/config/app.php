@@ -49,5 +49,11 @@ return array(
         'name' => 'user_roles',
         'user_id_column' => 'user_id',
         'role_id_column' => 'role_id'
+    ),
+    'user_table' => array(
+        'name' => 'users',
+        'id' => 'id',
+        'username' => 'username',
+        'password' => 'password'
     )
 );

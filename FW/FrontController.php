@@ -46,7 +46,7 @@ class FrontController {
                     continue;
                 }
             }
-            $roles = explode('|', $route['details']['roles']);
+            $roles = array_filter(explode('|', $route['details']['roles']), 'strlen');
             if (!Auth::isUserInRole($roles)) {
                 continue;
             }

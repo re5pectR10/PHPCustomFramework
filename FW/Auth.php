@@ -9,13 +9,26 @@ class Auth {
     }
 
     public static function getUserId() {
-        return $_SESSION['id'];
+        if (self::isAuth()) {
+            return $_SESSION['id'];
+        }
+
+        return null;
+    }
+
+    public static function setAuth($id) {
+        $_SESSION['id'] = $id;
     }
 
     public static function isUserInRole(array $roles = array()) {
         if (!self::isAuth()) {
             return false;
         }
+
+        if (count($roles) == 0) {
+            return true;
+        }
+
         $appInstance = App::getInstance();
         $userRole = new DB();
         $userRole = $userRole
@@ -36,8 +49,34 @@ class Auth {
             if (in_array($role[$appInstance->getConfig()->app['role_table']['role_name_column']], $roles)) {
                 return true;
             }
+        }
 
+        return false;
+    }
+
+    public static function validateUser($username, $password) {
+        $appInstance = App::getInstance();
+        $user = new DB();
+        $user = $user
+            ->prepare('Select ' .
+                $appInstance->getConfig()->app['user_table']['id'] .
+                ' From ' .
+                $appInstance->getConfig()->app['user_table']['name'] .
+                ' where ' .
+                $appInstance->getConfig()->app['user_table']['username'] .
+                '=? and ' .
+                $appInstance->getConfig()->app['user_table']['password'] .
+                '=?');
+        $user->execute(array($username, password_hash($password, PASSWORD_BCRYPT)));
+        $result = $user->fetchAllAssoc();
+        if (count($result) > 1) {
+            throw new \Exception('there are more than 1 user with this credentials', 500);
+        }
+        if (count($result) < 1) {
             return false;
         }
+
+        $_SESSION['id'] = $result[0][$appInstance->getConfig()->app['user_table']['id']];
+        return true;
     }
 } 

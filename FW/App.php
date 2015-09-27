@@ -80,7 +80,11 @@ class App {
             }
             $this->setSession($_s);
         }
+
+
         $_SESSION['id']=1;
+
+
 // Auth::setSess = $_SESSION;
 
         $this->_frontController->dispatch();
