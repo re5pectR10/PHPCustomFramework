@@ -29,6 +29,7 @@ class App {
         }
 
         include_once '../routes.php';
+        include_once '../dependencies.php';
     }
 
     public function setConfigFolder($path) {

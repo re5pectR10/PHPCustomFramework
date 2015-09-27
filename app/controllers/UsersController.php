@@ -2,13 +2,19 @@
 
 namespace Controllers;
 use FW\View;
+class UsersController{
 
-class UsersController {
+    /**
+     * @var test
+     */
+    private $name;
 
-    public function EditUser2($sas, $sss){
+    public function EditUser2($sas, $sss) {
+        echo($this->name->e->ui);
         echo $sas;echo $sss;
     }
     public function EditUser3($id){
+        echo $this->name->azzz;
         echo 'oooooooooooooooooooo';
     }
     public function index2(){

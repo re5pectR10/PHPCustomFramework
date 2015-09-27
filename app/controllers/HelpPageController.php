@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use FW\HelpPage;
+use FW\Redirect;
 use FW\Route;
 use FW\View;
 

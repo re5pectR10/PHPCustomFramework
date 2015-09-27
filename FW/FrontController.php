@@ -29,12 +29,10 @@ class FrontController {
 
     public function dispatch(){
         $_uri = $this->router->getURI();
-        //var_dump($_uri);
         $uriParams = array_filter(explode('/', $_uri), 'strlen');
         $controllerName = '';
         $controllerMethod = '';
         $paramsFromGET = array();
-        //var_dump(Route::getRouters());
         foreach(Route::getRouters() as $route){
             $paramsFromGET = array();
             if($route['method'] != $_SERVER['REQUEST_METHOD'] ){
@@ -42,6 +40,15 @@ class FrontController {
             }
 
             // todo if auth
+            $filter = explode('|', $route['details']['before']);
+            if (in_array('auth', $filter)) {
+                if (!Auth::isAuth()) {
+                   // continue;
+                }
+            }
+            if (in_array('csrf', $filter)) {
+
+            }
 
             $routeParams = array_filter(explode('/', $route['url']), 'strlen');
             $nonRequiredFieldsForRoute = $this->getNonRequiredFieldsCount($routeParams);
@@ -66,11 +73,9 @@ class FrontController {
                     }
 
                     $paramsFromGET[$paramName] = $uriParams[$i];
-                    //array_push($paramsFromGET, $uriParams[$i]);
                 }
 
                 if(count($uriParams)-1 == $i) {
-                    //echo($route['details']['use']);
                     $controllerData = explode('@', $route['details']['use']);
                     $controllerName = App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.$controllerData[0];
                     $controllerMethod = $controllerData[1];
@@ -95,7 +100,7 @@ class FrontController {
         $input =  InputData::getInstance();
         $input->setGet($paramsFromGET);
         $input->setPost($_POST);
-
+//var_dump(Route::getRouters());
         $class = new \ReflectionClass($controllerName);
         $method=$class->getMethod($controllerMethod);
         $methodRequiredParams = $method->getNumberOfRequiredParameters();
@@ -137,11 +142,11 @@ class FrontController {
 //        }
 
         if($methodRequiredParams > count($requestInput)) {
-            //throw new \Exception('parameters in the request not equal to parameters declared in method', 500);
+            throw new \Exception('parameters in the request not equal to parameters declared in method', 500);
         }
         $controller = new $controllerName();
+        $controller = DependencyProvider::injectDependenciesToController($controller);
         call_user_func_array(array($controller, $controllerMethod), $requestInput);
-        //$controller->$controllerMethod(extract($requestInput, EXTR_SKIP));
     }
 
     private function isParameterValid($paramFromUrl, $paramFromRoute) {

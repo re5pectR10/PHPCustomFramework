@@ -15,7 +15,8 @@ return array(
 
     'namespaces' => array(
 
-        'Controllers' => 'C:\wamp\www\fwTest\PHPCustomFramework\app\controllers'
+        'Controllers' => dirname(__DIR__) . '\controllers',
+        'Asd'=>  dirname(__DIR__) . '\asd'
     ),
 
     'session' => array(

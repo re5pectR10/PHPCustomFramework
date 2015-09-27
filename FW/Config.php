@@ -27,7 +27,7 @@ class Config {
             $this->_configFolder = $_configFolder . DIRECTORY_SEPARATOR;
             $ns = $this->app['namespaces'];
 	    if (is_array($ns)) {
-		\FW\Loader::registerNamespaces($ns);
+		Loader::registerNamespaces($ns);
 	    }
         } else {
             throw new \Exception('Config directory read error:' . $configFolder);
