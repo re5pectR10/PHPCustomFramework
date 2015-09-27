@@ -15,7 +15,9 @@ class DependencyProvider {
             'dependencies' => $dependency
         );
     }
-
+public static function r() {
+    return new static;
+}
     public static function injectDependenciesToController($controller) {
         if ($controller == null) {
             return null;
@@ -38,7 +40,7 @@ class DependencyProvider {
                 call_user_func($item['dependencies']);
             }
 
-            $newClassInstance = self::injectDependenciesToController($newClassInstance);var_dump($newClassInstance);
+            $newClassInstance = self::injectDependenciesToController($newClassInstance);
             $reflectionProperty->setValue($controller,$newClassInstance);
         }
 

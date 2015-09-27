@@ -10,6 +10,9 @@ class App {
     private $_config = null;
     private $router = null;
     private $_dbConnections = array();
+    /**
+     * @var \FW\Session
+     */
     private $_session = null;
 
     /**
@@ -19,7 +22,7 @@ class App {
     private $_frontController = null;
 
     private function __construct() {
-        //set_exception_handler(array($this, '_exceptionHandler'));
+        set_exception_handler(array($this, '_exceptionHandler'));
         Loader::registerNamespace('FW', dirname(__FILE__) . DIRECTORY_SEPARATOR);
         Loader::registerAutoLoad();
         $this->_config = Config::getInstance();
@@ -68,18 +71,16 @@ class App {
             $this->_frontController->setRouter(new Routers\DefaultRouter());
         }
 
-        /*$_sess = $this->_config->app['session'];
+        $_sess = $this->_config->app['session'];
         if ($_sess['autostart']) {
             if ($_sess['type'] == 'native') {
-                $_s = new \GF\Session\NativeSession($_sess['name'], $_sess['lifetime'], $_sess['path'], $_sess['domain'], $_sess['secure']);
-            } else if ($_sess['type'] == 'database') {
-                $_s = new \GF\Session\DBSession($_sess['dbConnection'],
-                                $_sess['name'], $_sess['dbTable'], $_sess['lifetime'], $_sess['path'], $_sess['domain'], $_sess['secure']);
+                $_s = new Session($_sess['name'], $_sess['lifetime'], $_sess['path'], $_sess['domain'], $_sess['secure']);
             } else {
                 throw new \Exception('No valid session', 500);
             }
             $this->setSession($_s);
-        }*/
+        }
+        $_SESSION['id']=1;
 // Auth::setSess = $_SESSION;
 
         $this->_frontController->dispatch();
@@ -95,6 +96,10 @@ class App {
      */
     public function getSession() {
         return $this->_session;
+    }
+
+    public function setSession($sess) {
+        $this->_session = $sess;
     }
 
     public function getDBConnection($connection = 'default') {

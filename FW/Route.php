@@ -10,7 +10,6 @@ class Route {
 
     public static function GET($url, $details = array()){
         self::addRoute('GET', $url, $details);
-        //array_push(self::$routes, array('url' => self::$prefix . $url, 'details' => $details, 'method' => 'GET'));
     }
 
     public static function POST($url, $details = array()){

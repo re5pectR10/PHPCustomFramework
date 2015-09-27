@@ -9,7 +9,7 @@ class Form {
             $options['method'] = 'POST';
         }
 
-        return '<form' . self::getAttributesAsString($options) . '>';
+        return '<form' . self::getAttributesAsString($options) . '>' . self::csrf();
     }
 
     public static function close() {
@@ -86,7 +86,7 @@ class Form {
     public static function csrf() {
         return self::hidden(array(
             'name' => '_token',
-            'value' => ''
+            'value' => CSRF::generateToken()
         ));
     }
 

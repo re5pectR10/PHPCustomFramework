@@ -23,7 +23,7 @@ return array(
 
         'autostart' => true,
 
-        'type' => 'database',
+        'type' => 'native',
 
         'name' => '__sess',
 
@@ -38,5 +38,16 @@ return array(
         'dbConnection' => 'default',
 
         'dbTable' => 'sessions',
+    ),
+
+    'role_table' => array(
+        'name' => 'roles',
+        'id_column' => 'id',
+        'role_name_column' => 'role'
+    ),
+    'user_role_table' => array(
+        'name' => 'user_roles',
+        'user_id_column' => 'user_id',
+        'role_id_column' => 'role_id'
     )
 );

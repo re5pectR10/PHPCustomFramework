@@ -43,11 +43,12 @@ class FrontController {
             $filter = explode('|', $route['details']['before']);
             if (in_array('auth', $filter)) {
                 if (!Auth::isAuth()) {
-                   // continue;
+                    continue;
                 }
             }
-            if (in_array('csrf', $filter)) {
-
+            $roles = explode('|', $route['details']['roles']);
+            if (!Auth::isUserInRole($roles)) {
+                continue;
             }
 
             $routeParams = array_filter(explode('/', $route['url']), 'strlen');
