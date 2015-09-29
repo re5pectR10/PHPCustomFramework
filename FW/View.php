@@ -78,6 +78,14 @@ class View {
 
     public static function render() {
         self::initViewPath();
+        if (count(self::$___layoutParts) > 0) {
+            foreach (self::$___layoutParts as $k => $v) {
+                $r = self::_includeFile($v);
+                if ($r) {
+                    self::$___layoutData[$k] = $r;
+                }
+            }
+        }
         if (self::$___layout !== null) {
             echo self::_includeFile(self::$___layout);
         } else {

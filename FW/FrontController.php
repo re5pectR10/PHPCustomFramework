@@ -32,7 +32,7 @@ class FrontController {
         $uriParams = array_filter(explode('/', $_uri), 'strlen');
         $controllerName = '';
         $controllerMethod = '';
-        $paramsFromGET = array();
+        $paramsFromGET = array();//var_dump(Route::getRouters());
         foreach(Route::getRouters() as $route){
             $paramsFromGET = array();
             if($route['method'] != $_SERVER['REQUEST_METHOD'] ){

@@ -20,6 +20,14 @@ class Session{
         $_SESSION[$name] = $value;
     }
 
+    public function getSession() {
+        return $_SESSION;
+    }
+
+    public function containKey($key) {
+        return isset($_SESSION[$key]);
+    }
+
     public function destroySession() {
         session_destroy();
     }

@@ -3,7 +3,7 @@
 namespace FW;
 
 class Auth {
-    // todo user role check
+
     public static  function isAuth() {
         return isset($_SESSION['id']) && $_SESSION['id'] != '';
     }
@@ -18,6 +18,12 @@ class Auth {
 
     public static function setAuth($id) {
         $_SESSION['id'] = $id;
+    }
+
+    public static function removeAuth() {
+        if (isset($_SESSION['id'])) {
+            unset($_SESSION['id']);
+        }
     }
 
     public static function isUserInRole(array $roles = array()) {

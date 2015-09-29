@@ -3,9 +3,9 @@ return array(
 
     'debug' => true,
 
-    'default_controller' => 'UsersController',
+    'default_controller' => 'ProductController',
 
-    'default_method' => 'index2',
+    'default_method' => 'index',
 
     'enable_default_routing' => false,
 
@@ -15,8 +15,7 @@ return array(
 
     'namespaces' => array(
 
-        'Controllers' => dirname(__DIR__) . '\controllers',
-        'Asd'=>  dirname(__DIR__) . '\asd'
+        'Controllers' => dirname(__DIR__) . '\controllers'
     ),
 
     'session' => array(
