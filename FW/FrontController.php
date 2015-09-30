@@ -98,6 +98,7 @@ class FrontController {
                 $controllerMethod = App::getInstance()->getConfig()->app['default_method'];
             }
         }
+
         $input =  InputData::getInstance();
         $input->setGet($paramsFromGET);
         $input->setPost($_POST);

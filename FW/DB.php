@@ -38,8 +38,8 @@ class DB {
         }        
         $this->stmt->execute($this->params);        
         return $this;
-    }    
-    
+    }
+
     public function fetchAllAssoc() {
         return $this->stmt->fetchAll(\PDO::FETCH_ASSOC);
     }

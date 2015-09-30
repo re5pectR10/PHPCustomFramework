@@ -1,9 +1,8 @@
 <?php
 
 namespace Controllers;
-use Asd\IUser;
 
-class test implements IUser{
+class test{
     public $azzz = 'sss';
     public $azzz2;
     public $e;

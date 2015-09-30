@@ -4,8 +4,8 @@ namespace FW;
 
 class Auth {
 
-    public static  function isAuth() {
-        return isset($_SESSION['id']) && $_SESSION['id'] != '';
+    public static function isAuth() {
+        return isset($_SESSION['id']);
     }
 
     public static function getUserId() {
@@ -27,12 +27,12 @@ class Auth {
     }
 
     public static function isUserInRole(array $roles = array()) {
-        if (!self::isAuth()) {
-            return false;
+        if (empty($roles)) {
+            return true;
         }
 
-        if (count($roles) == 0) {
-            return true;
+        if (!self::isAuth()) {
+            return false;
         }
 
         $appInstance = App::getInstance();
@@ -66,19 +66,22 @@ class Auth {
         $user = $user
             ->prepare('Select ' .
                 $appInstance->getConfig()->app['user_table']['id'] .
+                ', '.
+                $appInstance->getConfig()->app['user_table']['password'].
                 ' From ' .
                 $appInstance->getConfig()->app['user_table']['name'] .
                 ' where ' .
                 $appInstance->getConfig()->app['user_table']['username'] .
-                '=? and ' .
-                $appInstance->getConfig()->app['user_table']['password'] .
                 '=?');
-        $user->execute(array($username, password_hash($password, PASSWORD_BCRYPT)));
+        $user->execute(array($username));
         $result = $user->fetchAllAssoc();
         if (count($result) > 1) {
             throw new \Exception('there are more than 1 user with this credentials', 500);
         }
         if (count($result) < 1) {
+            return false;
+        }
+        if (!password_verify($password, $result[0][$appInstance->getConfig()->app['user_table']['password']])) {
             return false;
         }
 

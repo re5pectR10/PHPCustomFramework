@@ -15,7 +15,8 @@ return array(
 
     'namespaces' => array(
 
-        'Controllers' => dirname(__DIR__) . '\controllers'
+        'Controllers' => dirname(__DIR__) . '\controllers',
+        'Models' => dirname(__DIR__) . '\models'
     ),
 
     'session' => array(

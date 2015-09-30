@@ -13,7 +13,9 @@
                     <div class="thumbnail">
                         <img src="http://placehold.it/320x150" alt="">
                         <div class="caption">
+                            <?php if(\FW\Auth::isAuth()) : ?>
                             <a class="pull-right btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/add/<?= $product['id'] ?>">Add to Cart</a>
+                            <?php endif; ?>
                             <h4 class="pull-right">Price: <?= $product['price'] ?></h4>
                             <h4><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $product['id'] ?>"><?= $product['name'] ?></a>
                             </h4>

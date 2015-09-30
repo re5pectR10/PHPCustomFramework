@@ -11,6 +11,7 @@ class View {
     private static $___layoutParts = array();
     private static $___layoutData = array();
     private static $___layout = null;
+    private static $type = null;
     private  static function initViewPath() {
         
         self::$___viewPath = App::getInstance()->getConfig()->app['viewsDirectory'];
@@ -78,6 +79,14 @@ class View {
 
     public static function render() {
         self::initViewPath();
+        if (self::$type !== null) {
+            if (isset(self::$___data[0])) {
+                if (get_class(self::$___data[0]) != self::$type) {
+                    throw new \Exception('', 500);
+                }
+            }
+        }
+
         if (count(self::$___layoutParts) > 0) {
             foreach (self::$___layoutParts as $k => $v) {
                 $r = self::_includeFile($v);
@@ -91,6 +100,20 @@ class View {
         } else {
             throw new \Exception('The layout is missing', 500);
         }
+    }
+
+    public static function useType($class) {
+        if(!class_exists($class)) {
+            throw new \Exception('The class' . $class . 'is not defined', 500);
+        }
+
+        self::$type = $class;
+        return new static;
+    }
+
+    public static function removeType() {
+        self::$type = null;
+        return new static;
     }
 
     public static function appendTemplateToLayout($key, $template) {

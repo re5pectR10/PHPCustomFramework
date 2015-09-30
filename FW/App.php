@@ -80,9 +80,10 @@ class App {
             }
             $this->setSession($_s);
         }
-
+        //Auth::removeAuth();
+//unset($_SESSION['id']);
 //unset($_SESSION['cart']);
-        $_SESSION['id']=1;//$_SESSION['cart'][]=array('id'=>1,'quantity'=>1,'name'=>'test2','price'=>223);
+        //$_SESSION['id']=1;//$_SESSION['cart'][]=array('id'=>1,'quantity'=>1,'name'=>'test2','price'=>223);
 //Auth::removeAuth();
 
 // Auth::setSess = $_SESSION;

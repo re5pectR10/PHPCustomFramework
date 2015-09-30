@@ -6,7 +6,7 @@ namespace FW;
 class Redirect {
 
     public static function to($uri) {
-        header('Location: ' . Common::getBaseURL() . '/' . $uri);
+        header('Location: ' . Common::getBaseURL() . $uri);
         exit;
     }
 

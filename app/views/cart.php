@@ -8,6 +8,7 @@
             <div class="col-md-12">
 
                 <h1>Your Cart</h1>
+                <h2>Your Cash: <?= $user_cash ?></h2>
                 <a class="btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/buy">Buy</a>
                 <table class="table table-striped">
                     <thead>
