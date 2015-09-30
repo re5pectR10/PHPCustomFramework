@@ -149,6 +149,7 @@ class FrontController {
         $controller = new $controllerName();
         $controller = DependencyProvider::injectDependenciesToController($controller);
         call_user_func_array(array($controller, $controllerMethod), $requestInput);
+        Session::setOldInput(InputData::getInstance()->getPost());
     }
 
     private function isParameterValid($paramFromUrl, $paramFromRoute) {

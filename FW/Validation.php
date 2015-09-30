@@ -6,6 +6,10 @@ class Validation {
 
     private $_rules = array();
     private $_errors = array();
+    private $msgs = array(
+        'required' => ' is required',
+        'email' => ' is not a valid email'
+    );
 
     public function setRule($rule, $value, $params = null, $name = null) {
         $this->_rules[] = array('val' => $value, 'rule' => $rule, 'par' => $params, 'name' => $name);
@@ -17,11 +21,17 @@ class Validation {
         if (count($this->_rules) > 0) {
             foreach ($this->_rules as $v) {
                 if (!$this->$v['rule']($v['val'], $v['par'])) {
+                    $errorMsg = '';
                     if ($v['name']) {
-                        $this->_errors[] = $v['name'];
-                    } else {
-                        $this->_errors[] = $v['rule'];
+                        $errorMsg .= $v['name'];
                     }
+                    if (array_key_exists($v['rule'], $this->msgs)) {
+                        $errorMsg .= $this->msgs[$v['rule']];
+                    } else {
+                        $errorMsg .= ' ' . $v['rule'];
+                    }
+
+                    $this->_errors[] = $errorMsg;
                 }
             }
         }

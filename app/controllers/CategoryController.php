@@ -5,20 +5,22 @@ namespace Controllers;
 
 use FW\Auth;
 use FW\DB;
+use FW\Redirect;
+use FW\Session;
 use FW\View;
+use Models\Category;
+use Models\Product;
 
 class CategoryController {
 
     public function getCategory($id) {
-        $db=new DB();
-        $db->prepare('select p.id,p.name,p.quantity,p.price,p.description,(select count(*) from comments where product_id=p.id) as comments_count from products as p where p.is_deleted=false and p.category_id=?');
-        $db->execute(array($id));
-        $result['products']=$db->fetchAllAssoc();
-        $db->prepare('select id,name from categories');
-        $db->execute();
-        $result['categories']=$db->fetchAllAssoc();
+        $category = new Category();
+        $products = new Product();
+        $result['products']=$products->getProductWithCommentsCountForCategory($id);
+        $result['categories']=$category->getCategories();
         $result['title']='Shop';
         $result['currentCategory']=$id;
+        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         View::make('index', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');
@@ -30,5 +32,72 @@ class CategoryController {
             ->appendTemplateToLayout('footer', 'includes/footer')
             ->appendTemplateToLayout('catMenu', 'side_bar/category_menu')
             ->render();
+    }
+
+    public function deleteCategory($id) {
+        $category = new Category();
+        if ($category->delete($id) !== 1) {
+            Session::setError('can not delete this category');
+            Redirect::back();
+        }
+
+        Session::setMessage('done');
+        Redirect::to('');
+    }
+
+    public function getAdd() {
+        $result['title']='Shop';
+        $result['action'] = '/category/add';
+        $result['submit'] = '/category/add';
+        View::make('category.add', $result);
+        if (Auth::isAuth()) {
+            View::appendTemplateToLayout('topBar', 'top_bar/user');
+        } else {
+            View::appendTemplateToLayout('topBar', 'top_bar/guest');
+        }
+
+        View::appendTemplateToLayout('header', 'includes/header')
+            ->appendTemplateToLayout('footer', 'includes/footer')
+            ->render();
+    }
+
+    public function postAdd($name) {
+        $category = new Category();
+        if ($category->add($name) !== 1) {
+            Session::setError('something went wrong');
+            Redirect::back();
+        }
+
+        Session::setMessage('done');
+        Redirect::to('');
+    }
+
+    public function getEdit($id) {
+        $cat = new Category();
+        $result = array('category' => $cat->getCategory($id));
+        $result['title']='Shop';
+        $result['action'] = '/category/edit/' . $result['category']['id'];
+        $result['submit'] = 'edit';
+        View::make('category.add', $result);
+        if (Auth::isAuth()) {
+            View::appendTemplateToLayout('topBar', 'top_bar/user');
+        } else {
+            View::appendTemplateToLayout('topBar', 'top_bar/guest');
+        }
+
+        View::appendTemplateToLayout('header', 'includes/header')
+            ->appendTemplateToLayout('footer', 'includes/footer')
+            ->render();
+    }
+
+    public function postEdit($id, $name) {
+        $category = new Category();
+        if ($category->edit($id, $name) !== 1) {
+            Session::setError('something went wrong');
+            Redirect::back();
+        }
+
+        Session::setMessage('done');
+        Redirect::to('');
     }
 } 

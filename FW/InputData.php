@@ -21,7 +21,7 @@ class InputData {
         if (is_array($ar)) {
             if ($this->isGlobalEscapingEnable) {
                 foreach($ar as $key=>$value) {
-                    if ($key == '_token') {
+                    if ($key == '_token' || $key == 'password') {
                         $this->_post[$key] = $value;
                     } else {
                         $this->_post[$key] = Common::xss_clean($value);

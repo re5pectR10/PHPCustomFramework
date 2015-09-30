@@ -38,7 +38,7 @@ class Auth {
         $appInstance = App::getInstance();
         $userRole = new DB();
         $userRole = $userRole
-            ->prepare('Select ' .
+            ->prepare('Select r.' .
                 $appInstance->getConfig()->app['role_table']['role_name_column'] .
                 ' From ' .
                 $appInstance->getConfig()->app['role_table']['name'] .

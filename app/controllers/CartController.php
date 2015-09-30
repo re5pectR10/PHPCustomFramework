@@ -13,6 +13,7 @@ use FW\App;
 use FW\Auth;
 use FW\DB;
 use FW\Redirect;
+use FW\Session;
 use FW\View;
 use Models\Product;
 use Models\User;
@@ -48,10 +49,8 @@ class CartController {
             $sess->cart = array();
         }
         $cart = $sess->cart;
-        $db=new DB();
-        $db->prepare('select id,name,price,category_id from products where is_deleted=false and quantity>0 and id=?');
-        $db->execute(array($id));
-        $result=$db->fetchRowAssoc();
+        $product = new Product();
+        $result = $product->getProduct($id);
         if (!array_key_exists($id, $cart)) {
             $cart[$id] = array(
                 'quantity' => 1,
@@ -60,6 +59,7 @@ class CartController {
             );
         }
 
+        Session::setMessage('added to cart');
         $sess->cart = $cart;
         Redirect::to('/category/'.$result['category_id']);
     }
@@ -88,44 +88,32 @@ class CartController {
         $totalSum = 0;
         $sess=App::getInstance()->getSession();
         $cart = $sess->cart;
-        $db=new DB();
-        $db->prepare('START TRANSACTION');
-        $db->execute();
+        $products = new Product();
+        $products->startTran();
 
         foreach($cart as $id => $item) {
-            if (!$this->changeQuantityInDb($id, $item['quantity'])) {
-                $db->prepare('ROLLBACK');
-                $db->execute();
+            if ($products->changeQuantity($id, $item['quantity']) !== 1) {
+                $products->rollback();
+                Session::setError('not enough available product');
                 Redirect::back();
             }
 
             $totalSum += $item['price']*$item['quantity'];
         }
 
-        $db->prepare('update users set cash=cash-? where cash>=? and id=?');
-        $db->execute(array($totalSum, $totalSum, Auth::getUserId()));
-        if ($db->getAffectedRows()!==1) {
-            $db->prepare('ROLLBACK');
-            $db->execute();
+        $user = new User();
+        if ($user->changeUserCash(Auth::getUserId(), $totalSum)!==1) {
+            $products->rollback();
+            Session::setError('not enough money');
             Redirect::back();
         }
 
-        $db->prepare('COMMIT');
-        $db->execute();
+        $products->commit();
         unset($_SESSION['cart']);
+        Session::setMessage('Done');
         Redirect::to('user/cart');
     }
 
-    private function changeQuantityInDb($id,$quantity) {
-        $db=new DB();
-        $db->prepare('update products set quantity=quantity-? where is_deleted=false and quantity>=? and id=?');
-        $db->execute(array($quantity, $quantity, $id));
-        if ($db->getAffectedRows()!==1) {
-            return false;
-        }
-
-        return true;
-    }
     private function isProductQuantityAvailable($id, $quantity) {
         $db=new DB();
         $db->prepare('select id from products where is_deleted=false and quantity>=? and id=?');

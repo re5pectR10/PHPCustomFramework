@@ -89,6 +89,7 @@ class App {
 // Auth::setSess = $_SESSION;
 
         $this->_frontController->dispatch();
+
     }
 
    // public function setSession(\GF\Session\ISession $session) {

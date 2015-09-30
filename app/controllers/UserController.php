@@ -3,6 +3,7 @@
 namespace Controllers;
 use FW\Auth;
 use FW\Redirect;
+use FW\Session;
 use FW\Validation;
 use FW\View;
 use Models\User;
@@ -27,18 +28,21 @@ class UserController{
 
     public function postRegister(UserModel $user) {
         $validator = new Validation();
-        $validator->setRule('required', $user->username);
-        $validator->setRule('required', $user->password);
-        $validator->setRule('email', $user->email);
+        $validator->setRule('required', $user->username, null, 'username');
+        $validator->setRule('required', $user->password, null, 'password');
+        $validator->setRule('email', $user->email, null, 'email');
         if (!$validator->validate()) {
+            Session::setError($validator->getErrors());
             Redirect::back();
         }
 
         $userModel = new User();
-        if ($userModel->register($user->username, $user->email, $user->password) !== 1) {
+        if (($result = $userModel->register($user->username, $user->email, $user->password)) !== 1) {
+            Session::setError($result);
             Redirect::back();
         }
 
+        Session::setMessage('registered successfully');
         Redirect::to('');
     }
 
@@ -95,6 +99,10 @@ class UserController{
         }
 
         Redirect::to('');
+    }
+
+    public function setRole() {
+
     }
 //    /**
 //     * @var test

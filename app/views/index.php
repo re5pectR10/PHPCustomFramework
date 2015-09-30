@@ -8,6 +8,12 @@
             <?= \FW\View::getLayoutData('catMenu') ?>
 
             <div class="col-md-9">
+                <?php if(\FW\Session::hasMessage()): ?>
+                    <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
+                <?php endif; ?>
+                <?php if(\FW\Session::hasError()): ?>
+                    <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+                <?php endif; ?>
 
                 <div class="row carousel-holder">
 

@@ -25,7 +25,15 @@ Route::Group('user', array(), function() {
     Route::GET('/cart/product/{id:int?}/remove', array('use'=>'CartController@removeProduct'));
 });
 
-Route::GET('category/{id:int}', array('use' => 'CategoryController@getCategory'));
+Route::Group('category', array(), function() {
+    Route::GET('/{id:int}', array('use' => 'CategoryController@getCategory'));
+    Route::GET('/delete/{id:int}', array('use' => 'CategoryController@deleteCategory', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/add', array('use' => 'CategoryController@getAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/add', array('use' => 'CategoryController@postAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/edit/{id:int}', array('use' => 'CategoryController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/edit/{id:int}', array('use' => 'CategoryController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+});
+
 Route::GET('product/{id:int}', array('use' => 'ProductController@getProduct'));
 //Route::GET('users/{id:int}/edit', array('use'=>'UsersController@EditUser3','before'=>'csrf'));
 ////Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));

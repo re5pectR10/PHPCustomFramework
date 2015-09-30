@@ -7,6 +7,7 @@ class Redirect {
 
     public static function to($uri) {
         header('Location: ' . Common::getBaseURL() . $uri);
+        Session::setOldInput(InputData::getInstance()->getPost());
         exit;
     }
 
@@ -20,6 +21,7 @@ class Redirect {
 
     public static function back() {
         header('Location: ' . $_SERVER['HTTP_REFERER']);
+        Session::setOldInput(InputData::getInstance()->getPost());
         exit;
     }
 } 

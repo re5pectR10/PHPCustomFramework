@@ -49,6 +49,7 @@
                     </tr>
                     </tfoot>
                 </table>
+                <p class="alert-danger"><?= \FW\Session::hasError() ? \FW\Session::getError() : '' ?></p>
             </div>
 
         </div>
