@@ -31,7 +31,7 @@ class CommentController {
 
     public function delete($id) {
         $comment = new Comment();
-        if (Auth::isUserInRole(array('admin')) || $comment->getComment($id)['id'] == Auth::getUserId()) {
+        if (Auth::isUserInRole(array('admin')) || $comment->getComment($id)['user_id'] == Auth::getUserId()) {
             if ($comment->delete($id) !== 1) {
                 Session::setError('something went wrong');
                 Redirect::back();

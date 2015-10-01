@@ -48,4 +48,15 @@ class AdminController {
         Session::setMessage('Done');
         Redirect::to('/admin/users');
     }
+
+    public function banUser($id) {
+        $user = new User();
+        if ($user->banUser($id) !== 1) {
+            Session::setError('something went wrong');
+            Redirect::back();
+        }
+
+        Session::setMessage('Done');
+        Redirect::to('/admin/users');
+    }
 } 

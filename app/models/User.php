@@ -64,7 +64,7 @@ class User extends Model {
     }
 
     public function getUsersWithRoles() {
-        $this->db->prepare('select u.id,u.username,r.role from users as u left join user_roles as ur on u.id=ur.user_id left join roles as r on r.id=ur.role_id');
+        $this->db->prepare('select u.id,u.username,r.role,u.is_banned from users as u left join user_roles as ur on u.id=ur.user_id left join roles as r on r.id=ur.role_id');
         $this->db->execute();
         return $this->db->fetchAllAssoc();
     }
@@ -83,5 +83,17 @@ class User extends Model {
         $this->db->prepare('delete from user_roles where user_id=?');
         $this->db->execute(array($userId));
         return $this->db->getAffectedRows();
+    }
+
+    public function banUser($id) {
+        $this->db->prepare('update users set is_banned=true where id=?');
+        $this->db->execute(array($id));
+        return $this->db->getAffectedRows();
+    }
+
+    public function isBanned($id) {
+        $this->db->prepare('select is_banned from users where id=?');
+        $this->db->execute(array($id));
+        return $this->db->fetchRowAssoc();
     }
 } 

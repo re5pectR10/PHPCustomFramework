@@ -27,7 +27,7 @@
                         ?>
                         <tr>
                             <td><?= $u['username'] ?></td>
-                            <td><?= $u['role'] ?></td>
+                            <td><?= $u['is_banned'] ? 'ban' : $u['role'] ?></td>
                             <td>
                             <?php if($u['role'] == 'admin'): ?>
                                 <a class="btn btn-primary" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/editor">Make Editor</a>

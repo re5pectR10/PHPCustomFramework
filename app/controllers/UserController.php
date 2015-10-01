@@ -63,6 +63,14 @@ class UserController{
 
     public function postLogin(UserModel $user) {
         if (!Auth::validateUser($user->username, $user->password)) {
+            Session::setError('wrong credentials');
+            Redirect::back();
+        }
+
+        $u = new User();
+        if ($u->isBanned(Auth::getUserId())['is_banned'] == true) {
+            Auth::removeAuth();
+            Session::setError('you are banned');
             Redirect::back();
         }
 

@@ -56,6 +56,7 @@ Route::Group('promotion', array(), function() {
 Route::GET('comment/delete/{id:int}', array('use' => 'CommentController@delete', 'before' => 'auth'));
 Route::GET('admin/users', array('use' => 'AdminController@getUsers', 'before' => 'auth', 'roles' => 'admin'));
 Route::GET('admin/make/{id:int}/{role}', array('use' => 'AdminController@setRole', 'before' => 'auth', 'roles' => 'admin'));
+Route::GET('admin/ban/{id:int}', array('use' => 'AdminController@banUser', 'before' => 'auth', 'roles' => 'admin'));
 //Route::GET('users/{id:int}/edit', array('use'=>'UsersController@EditUser3','before'=>'csrf'));
 ////Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 ////Route::GET('users/edit', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));

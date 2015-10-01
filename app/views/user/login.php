@@ -12,6 +12,9 @@
                 <?= \FW\Form::password(array('name' => 'password', 'placeholder' => 'password')) ?>
                 <?= \FW\Form::submit(array('name' => 'submit', 'value' => 'Log In')) ?>
                 <?= \FW\Form::close() ?>
+                <p class="alert-danger">
+                    <?= \FW\Session::getError() ?>
+                </p>
             </div>
 
         </div>
