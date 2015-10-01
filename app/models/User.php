@@ -62,4 +62,26 @@ class User extends Model {
         $this->db->execute(array($totalSum, $totalSum, $id));
         return $this->db->getAffectedRows();
     }
+
+    public function getUsersWithRoles() {
+        $this->db->prepare('select u.id,u.username,r.role from users as u left join user_roles as ur on u.id=ur.user_id left join roles as r on r.id=ur.role_id');
+        $this->db->execute();
+        return $this->db->fetchAllAssoc();
+    }
+
+    public function setRole($userId, $roleName) {
+        $this->db->prepare('select id from roles where role=?');
+        $this->db->execute(array($roleName));
+        $roleId = $this->db->fetchRowAssoc()['id'];
+        $this->deleteUserRole($userId);
+        $this->db->prepare('insert into user_roles(user_id,role_id) values (?,?)');
+        $this->db->execute(array($userId, $roleId));
+        return $this->db->getAffectedRows();
+    }
+
+    public function deleteUserRole($userId) {
+        $this->db->prepare('delete from user_roles where user_id=?');
+        $this->db->execute(array($userId));
+        return $this->db->getAffectedRows();
+    }
 } 

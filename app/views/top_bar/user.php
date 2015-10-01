@@ -17,5 +17,10 @@
                 <a href="<?= \FW\Common::getBaseURL() ?>/promotion">Promotions</a>
             </li>
         <?php endif ?>
+        <?php if($isAdmin): ?>
+            <li>
+                <a href="<?= \FW\Common::getBaseURL() ?>/admin/users">Users</a>
+            </li>
+        <?php endif ?>
     </ul>
 </div>

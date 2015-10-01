@@ -28,6 +28,8 @@ class CartController {
         }
         $result['title']='Shop';
         $result['cart'] = $cart;
+        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
+        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         $user = new User();
         $result['user_cash'] = $user->getUserMoney(Auth::getUserId());
         View::make('cart', $result);

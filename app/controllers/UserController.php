@@ -76,7 +76,10 @@ class UserController{
 
     public function getProfile() {
         $user = new User();
-        View::make('user.profile', $user->getUser(Auth::getUserId()));
+        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
+        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+        $result['user'] = $user->getUser(Auth::getUserId());
+        View::make('user.profile', $result);
         View::appendTemplateToLayout('topBar', 'top_bar/user');
         View::appendTemplateToLayout('header', 'includes/header')
             ->appendTemplateToLayout('footer', 'includes/footer')
