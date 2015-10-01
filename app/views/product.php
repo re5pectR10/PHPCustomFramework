@@ -8,7 +8,12 @@
             <?= \FW\View::getLayoutData('catMenu') ?>
 
             <div class="col-md-9">
-
+                <?php if(\FW\Session::hasMessage()): ?>
+                    <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
+                <?php endif; ?>
+                <?php if(\FW\Session::hasError()): ?>
+                    <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+                <?php endif; ?>
                 <div class="col-md-12">
                     <div class="thumbnail">
                         <img src="http://placehold.it/320x150" alt="">
@@ -41,11 +46,23 @@
                                     <p><?= $c['content'] ?></p>
                                 </div>
                             </div>
-
+                            <?php if(\FW\Auth::getUserId() == $c['user_id'] || $isAdmin): ?>
+                                <a href="<?= \FW\Common::getBaseURL() ?>/comment/delete/<?= $c['id'] ?>" class="btn btn-danger">Delete</a>
+                            <?php endif ?>
                         </div>
                     <?php
                     endforeach;
                     ?>
+                    <?php if (\FW\Auth::isAuth()) : ?>
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL().'/product/' .$product['id'] . '/add/comment')) ?>
+                                <?= \FW\Form::textarea('', array('name' => 'content', 'placeholder' => 'Write here', 'rows' => '4', 'cols' => '100')) ?>
+                                <?= \FW\Form::submit(array('name' => 'submit', 'value' => 'Send', 'class' => 'btn btn-success')) ?>
+                                <?= \FW\Form::close() ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
             </div>

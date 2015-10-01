@@ -25,7 +25,7 @@ class Product extends Model {
     }
 
     public function getProduct($id) {
-        $this->db->prepare('select id,name,price,category_id,description,quantity,(select max(discount) from promotoins where product_id=p.id) as discount from products where is_deleted=false and quantity>0 and id=?');
+        $this->db->prepare('select p.id,name,price,category_id,description,quantity,(select max(discount) from promotoins where product_id=p.id) as discount from products as p where is_deleted=false and quantity>0 and p.id=?');
         $this->db->execute(array($id));
         return $this->db->fetchRowAssoc();
     }

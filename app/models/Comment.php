@@ -10,4 +10,22 @@ class Comment extends Model {
         $this->db->execute(array($id));
         return $this->db->fetchAllAssoc();
     }
+
+    public function add($user_id, $product_id, $text) {
+        $this->db->prepare('insert into comments(user_id,product_id,content,posted_on) values(?,?,?,?)');
+        $this->db->execute(array($user_id, $product_id, $text, date("Y-m-d")));var_dump($this->db);
+        return $this->db->getAffectedRows();
+    }
+
+    public function getComment($id) {
+        $this->db->prepare('select id,content,posted_on,user_id from comments where id=?');
+        $this->db->execute(array($id));
+        return $this->db->fetchRowAssoc();
+    }
+
+    public function delete($id) {
+        $this->db->prepare('delete from comments where id=?');
+        $this->db->execute(array($id));
+        return $this->db->getAffectedRows();
+    }
 } 

@@ -41,6 +41,7 @@ Route::Group('product', array(), function() {
     Route::POST('/add', array('use' => 'ProductController@postAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
     Route::GET('/edit/{id:int}', array('use' => 'ProductController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
     Route::POST('/edit/{id:int}', array('use' => 'ProductController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/{id:int}/add/comment', array('use' => 'CommentController@post', 'before' => 'auth|csrf'));
 });
 
 Route::Group('promotion', array(), function() {
@@ -51,6 +52,8 @@ Route::Group('promotion', array(), function() {
     Route::GET('/edit/{id:int}', array('use' => 'PromotionController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
     Route::POST('/edit/{id:int}', array('use' => 'PromotionController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
 });
+
+Route::GET('comment/delete/{id:int}', array('use' => 'CommentController@delete', 'before' => 'auth'));
 //Route::GET('users/{id:int}/edit', array('use'=>'UsersController@EditUser3','before'=>'csrf'));
 ////Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 ////Route::GET('users/edit', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));

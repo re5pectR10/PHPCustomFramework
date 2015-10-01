@@ -54,6 +54,7 @@ class ProductController {
         $result['title']='Shop';
         $result['currentCategory']=$result['product']['category_id'];
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
+        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         View::make('product', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');
