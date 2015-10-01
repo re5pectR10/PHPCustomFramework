@@ -8,7 +8,8 @@ class Validation {
     private $_errors = array();
     private $msgs = array(
         'required' => ' is required',
-        'email' => ' is not a valid email'
+        'email' => ' is not a valid email',
+        'date' => ' wrong date format'
     );
 
     public function setRule($rule, $value, $params = null, $name = null) {
@@ -60,6 +61,11 @@ class Validation {
 
     public static function matchesStrict($val1, $val2) {
         return $val1 === $val2;
+    }
+
+    static public function date($date)
+    {
+        return (\DateTime::createFromFormat('Y-m-d', $date) !== false);
     }
 
     public static function different($val1, $val2) {

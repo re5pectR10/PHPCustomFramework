@@ -8,9 +8,9 @@ use FW\DB;
 class Category extends Model {
 
     public function getPromotion($id) {
-        $this->db->prepare('select max(discount) as disc from promotoins where category_id=? and exp_date>?');
-        $this->db->execute(array($id, date("Y-m-d H:i:s")));
-        return $this->db->fetchRowAssoc()['disc'];
+        $this->db->prepare('select max(discount) as discount from promotoins where category_id=? and exp_date>?');
+        $this->db->execute(array($id, date("Y-m-d")));
+        return $this->db->fetchRowAssoc()['discount'];
     }
 
     public function getCategory($id) {
@@ -20,8 +20,8 @@ class Category extends Model {
     }
 
     public function getCategories() {
-        $this->db->prepare('select id,name from categories');
-        $this->db->execute();
+        $this->db->prepare('select id,name,(select max(discount) from promotoins where category_id=id and exp_date>?) as discount from categories');
+        $this->db->execute(array(date("Y-m-d H:i:s")));
         return $this->db->fetchAllAssoc();
     }
 

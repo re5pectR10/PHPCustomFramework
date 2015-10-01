@@ -6,7 +6,9 @@
         <div class="row">
 
             <?= \FW\View::getLayoutData('catMenu') ?>
-
+            <?php if($isEditor): ?>
+                <a href="<?= \FW\Common::getBaseURL() ?>/product/add" class="btn btn-success">Add Product</a>
+            <?php endif ?>
             <div class="col-md-9">
                 <?php if(\FW\Session::hasMessage()): ?>
                     <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
@@ -55,7 +57,10 @@
                         <div class="thumbnail">
                             <img src="http://placehold.it/320x150" alt="">
                             <div class="caption">
-                                <h4 class="pull-right"><?= $p['price'] ?></h4>
+                                <?php if (isset($p['promotion_price'])) : ?>
+                                    <h2 class="pull-right"><?= $p['promotion_price'] ?></h2>
+                                <?php endif; ?>
+                                <h4 class="<?= isset($p['promotion_price']) ? 'strike' : '' ?> pull-right"><?= $p['price'] ?></h4>
                                 <h4><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $p['id'] ?>"><?= $p['name'] ?></a>
                                 </h4>
                                 <div>

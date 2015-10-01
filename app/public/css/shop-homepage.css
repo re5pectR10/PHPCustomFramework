@@ -40,6 +40,10 @@ body {
     color: #d17581;
 }
 
+.strike {
+    text-decoration-line: line-through;
+}
+
 .thumbnail {
     padding: 0;
 }

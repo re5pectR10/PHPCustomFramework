@@ -34,7 +34,23 @@ Route::Group('category', array(), function() {
     Route::POST('/edit/{id:int}', array('use' => 'CategoryController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
 });
 
-Route::GET('product/{id:int}', array('use' => 'ProductController@getProduct'));
+Route::Group('product', array(), function() {
+    Route::GET('/{id:int}', array('use' => 'ProductController@getProduct'));
+    Route::GET('/delete/{id:int}', array('use' => 'ProductController@delete', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/add', array('use' => 'ProductController@getAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/add', array('use' => 'ProductController@postAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/edit/{id:int}', array('use' => 'ProductController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/edit/{id:int}', array('use' => 'ProductController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+});
+
+Route::Group('promotion', array(), function() {
+    Route::GET('', array('use' => 'PromotionController@getAll', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/delete/{id:int}', array('use' => 'PromotionController@delete', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/add', array('use' => 'PromotionController@getAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/add', array('use' => 'PromotionController@postAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::GET('/edit/{id:int}', array('use' => 'PromotionController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+    Route::POST('/edit/{id:int}', array('use' => 'PromotionController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+});
 //Route::GET('users/{id:int}/edit', array('use'=>'UsersController@EditUser3','before'=>'csrf'));
 ////Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 ////Route::GET('users/edit', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));

@@ -31,7 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="<?= \FW\Common::getBaseURL() ?>"><?= $title ?></a>
+            <a class="navbar-brand" href="<?= \FW\Common::getBaseURL() ?>">Shop</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <?= \FW\View::getLayoutData('topBar') ?>

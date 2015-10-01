@@ -48,7 +48,7 @@ class CategoryController {
     public function getAdd() {
         $result['title']='Shop';
         $result['action'] = '/category/add';
-        $result['submit'] = '/category/add';
+        $result['submit'] = 'add';
         View::make('category.add', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');

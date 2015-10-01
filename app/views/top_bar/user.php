@@ -12,5 +12,10 @@
         <li>
             <a href="<?= \FW\Common::getBaseURL() ?>/user/products">Your Products</a>
         </li>
+        <?php if($isEditor): ?>
+            <li>
+                <a href="<?= \FW\Common::getBaseURL() ?>/promotion">Promotions</a>
+            </li>
+        <?php endif ?>
     </ul>
 </div>

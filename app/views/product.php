@@ -19,6 +19,10 @@
                             <h4 class="pull-right">Price: <?= $product['price'] ?></h4>
                             <h4><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $product['id'] ?>"><?= $product['name'] ?></a>
                             </h4>
+                            <?php if($isEditor): ?>
+                                <a href="<?= \FW\Common::getBaseURL() ?>/product/edit/<?= $product['id'] ?>" class="btn btn-primary">Edit</a>
+                                <a href="<?= \FW\Common::getBaseURL() ?>/product/delete/<?= $product['id'] ?>" class="btn btn-danger">Delete</a>
+                            <?php endif ?>
                             <p class="product-description"><?= $product['description'] ?></p>
                             <div class="ratings">
                                 <span class="pull-right">Available: <?= $product['quantity'] ?></span>

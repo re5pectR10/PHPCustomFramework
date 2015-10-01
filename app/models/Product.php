@@ -13,8 +13,8 @@ class Product extends Model {
     }
 
     public function getProducts() {
-        $this->db->prepare('select p.id,name,quantity,price,description,(select count(*) from comments where product_id=p.id) as comments_count from products as p where quantity>=0 and is_deleted=false');
-        $this->db->execute();
+        $this->db->prepare('select p.id,name,quantity,price,description,category_id,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where quantity>=0 and is_deleted=false');
+        $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s")));
         return $this->db->fetchAllAssoc();
     }
 
@@ -25,7 +25,7 @@ class Product extends Model {
     }
 
     public function getProduct($id) {
-        $this->db->prepare('select id,name,price,category_id from products where is_deleted=false and quantity>0 and id=?');
+        $this->db->prepare('select id,name,price,category_id,description,quantity,(select max(discount) from promotoins where product_id=p.id) as discount from products where is_deleted=false and quantity>0 and id=?');
         $this->db->execute(array($id));
         return $this->db->fetchRowAssoc();
     }
@@ -40,5 +40,23 @@ class Product extends Model {
         $this->db->prepare('select p.id,p.name,p.quantity,p.price,p.description,(select count(*) from comments where product_id=p.id) as comments_count from products as p where quantity>=0 and  p.is_deleted=false and p.category_id=?');
         $this->db->execute(array($id));
         return $this->db->fetchAllAssoc();
+    }
+
+    public function add($name,$description,$price,$quantity,$category_id) {
+        $this->db->prepare('insert into products(name,description,price,quantity,category_id) values(?,?,?,?,?)');
+        $this->db->execute(array($name,$description,$price,$quantity,$category_id));
+        return $this->db->getAffectedRows();
+    }
+
+    public function edit($id, $name,$description,$price,$quantity,$category_id) {
+        $this->db->prepare('update products set name=?, description=?, price=?, quantity=?, category_id=? where id=?');
+        $this->db->execute(array($name, $description,$price,$quantity,$category_id, $id));
+        return $this->db->getAffectedRows();
+    }
+
+    public function delete($id) {
+        $this->db->prepare('update products set is_deleted=true where id=?');
+        $this->db->execute(array($id));
+        return $this->db->getAffectedRows();
     }
 } 

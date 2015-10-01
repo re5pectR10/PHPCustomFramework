@@ -36,6 +36,10 @@ class Form {
         return self::getInputFormElement('hidden', $options);
     }
 
+    public static function datetime(array $options = array()) {
+        return self::getInputFormElement('datetime', $options);
+    }
+
     public static function file(array $options = array()) {
         return self::getInputFormElement('file', $options);
     }
