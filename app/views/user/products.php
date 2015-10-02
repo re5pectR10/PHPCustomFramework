@@ -15,14 +15,16 @@
                     <tr>
                         <th>Product</th>
                         <th>Quantity</th>
-                        <th>Total Price</th>
-                        <th>Remove from Cart</th>
+                        <th>Total Bought Price</th>
+                        <th>Quantity To Sell</th>
+                        <th>Sell Price</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
                     foreach($products as $item):
-                    ?>
+                        ?>
                         <tr>
                             <td><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $item['id'] ?>"><?= $item['name'] ?></a></td>
                             <td>

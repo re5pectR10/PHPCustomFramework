@@ -112,8 +112,12 @@ class UserController{
         Redirect::to('');
     }
 
-    public function setRole() {
+    public function getProducts($id) {
+        if (!(Auth::isUserInRole(array('admin')) || $id == Auth::getUserId())) {
+            Redirect::back();
+        }
 
+        
     }
 //    /**
 //     * @var test

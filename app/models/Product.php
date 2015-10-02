@@ -13,7 +13,13 @@ class Product extends Model {
     }
 
     public function getProducts() {
-        $this->db->prepare('select p.id,name,quantity,price,description,category_id,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where quantity>=0 and is_deleted=false');
+        $this->db->prepare('select p.id,name,quantity,price,description,category_id,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where quantity>0 and is_deleted=false');
+        $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s")));
+        return $this->db->fetchAllAssoc();
+    }
+
+    public function getProductsWitnUnavailable() {
+        $this->db->prepare('select p.id,name,quantity,price,description,category_id,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where is_deleted=false');
         $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s")));
         return $this->db->fetchAllAssoc();
     }
@@ -25,8 +31,14 @@ class Product extends Model {
     }
 
     public function getProduct($id) {
-        $this->db->prepare('select p.id,name,price,category_id,description,quantity,(select max(discount) from promotoins where product_id=p.id) as discount from products as p where is_deleted=false and quantity>0 and p.id=?');
-        $this->db->execute(array($id));
+        $this->db->prepare('select p.id,p.name,p.price,p.category_id,p.description,p.quantity,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where is_deleted=false and quantity>0 and p.id=?');
+        $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $id));
+        return $this->db->fetchRowAssoc();
+    }
+
+    public function getProductWitnUnavailable($id) {
+        $this->db->prepare('select p.id,p.name,p.price,p.category_id,p.description,p.quantity,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where is_deleted=false and p.id=?');
+        $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $id));
         return $this->db->fetchRowAssoc();
     }
 
@@ -36,9 +48,15 @@ class Product extends Model {
         return $this->db->getAffectedRows();
     }
 
-    public function getProductWithCommentsCountForCategory($id) {
-        $this->db->prepare('select p.id,p.name,p.quantity,p.price,p.description,(select count(*) from comments where product_id=p.id) as comments_count from products as p where quantity>=0 and  p.is_deleted=false and p.category_id=?');
-        $this->db->execute(array($id));
+    public function getProductsForCategory($id) {
+        $this->db->prepare('select p.id,p.name,p.quantity,p.price,p.description,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where quantity>0 and  p.is_deleted=false and p.category_id=?');
+        $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $id));
+        return $this->db->fetchAllAssoc();
+    }
+
+    public function getProductsForCategoryWitnUnavailable($id) {
+        $this->db->prepare('select p.id,p.name,p.quantity,p.price,p.description,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where p.is_deleted=false and p.category_id=?');
+        $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $id));
         return $this->db->fetchAllAssoc();
     }
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Re5PecT
- * Date: 15-9-29
- * Time: 19:33
- */
 
 namespace Controllers;
 
@@ -16,6 +10,7 @@ use FW\Redirect;
 use FW\Session;
 use FW\View;
 use Models\Product;
+use Models\Promotion;
 use Models\User;
 
 class CartController {
@@ -27,7 +22,8 @@ class CartController {
             $cart = $sess->cart;
         }
         $result['title']='Shop';
-        $result['cart'] = $cart;
+        $result['products'] = $this->getProductsFromCart($cart);
+        //var_dump($result['products']);
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         $user = new User();
@@ -91,40 +87,55 @@ class CartController {
         $sess=App::getInstance()->getSession();
         $cart = $sess->cart;
         $products = new Product();
-        $products->startTran();
+        $user = new User();
 
-        foreach($cart as $id => $item) {
-            if ($products->changeQuantity($id, $item['quantity']) !== 1) {
+        $products->startTran();
+        $productsFromCart = $this->getProductsFromCart($cart);
+        foreach($productsFromCart as $item) {
+            if ($products->changeQuantity($item['id'], $item['cart_quantity']) !== 1) {
                 $products->rollback();
                 Session::setError('not enough available product');
                 Redirect::back();
             }
 
-            $totalSum += $item['price']*$item['quantity'];
+            $totalSum += $item['price']*$item['cart_quantity'];
         }
 
         $user = new User();
-        if ($user->changeUserCash(Auth::getUserId(), $totalSum)!==1) {
+        if ($user->changeUserCash(Auth::getUserId(), $totalSum) !== 1) {
             $products->rollback();
             Session::setError('not enough money');
             Redirect::back();
         }
-
+        foreach($productsFromCart as $item) {
+            if ($user->addProduct(Auth::getUserId(), $item['id'], $item['cart_quantity'], $item['price']) !== 1) {
+                $products->rollback();
+                Session::setError('something went wrong');
+                Redirect::back();
+            }
+        }
         $products->commit();
         unset($_SESSION['cart']);
         Session::setMessage('Done');
         Redirect::to('user/cart');
     }
 
-    private function isProductQuantityAvailable($id, $quantity) {
-        $db=new DB();
-        $db->prepare('select id from products where is_deleted=false and quantity>=? and id=?');
-        $db->execute(array($id, $quantity));
-        $result=$db->fetchRowAssoc();
-        if($result!==null) {
-            return true;
+    private function getProductsFromCart($cart) {
+        $products = new Product();
+        $prom = new Promotion();
+        $all_promotion = $prom->getHighestActivePromotion();
+        $productsFromCart = array();
+        foreach($cart as $id => $q) {
+            if (($currentProduct = $products->getProduct($id))) {
+                $productPromotion = max($all_promotion['discount'], $currentProduct['discount'], $currentProduct['category_discount']);
+                if (is_numeric($productPromotion)) {
+                    $currentProduct['price'] = $currentProduct['price'] - ($currentProduct['price'] * ($productPromotion / 100));
+                }
+                $currentProduct['cart_quantity'] = $q['quantity'];
+                $productsFromCart[] = $currentProduct;
+            }
         }
 
-        return false;
+        return $productsFromCart;
     }
 } 

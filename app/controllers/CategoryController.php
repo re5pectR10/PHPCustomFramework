@@ -10,18 +10,32 @@ use FW\Session;
 use FW\View;
 use Models\Category;
 use Models\Product;
+use Models\Promotion;
 
 class CategoryController {
 
     public function getCategory($id) {
         $category = new Category();
         $products = new Product();
-        $result['products']=$products->getProductWithCommentsCountForCategory($id);
+        $prom = new Promotion();
         $result['categories']=$category->getCategories();
         $result['title']='Shop';
         $result['currentCategory']=$id;
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+        if ($result['isEditor']) {
+            $result['products']=$products->getProductsForCategoryWitnUnavailable($id);
+        } else {
+            $result['products']=$products->getProductsForCategory($id);
+        }
+        $all_promotion = $prom->getHighestActivePromotion();
+        foreach($result['products'] as $k => $p) {
+            $productPromotion = max($all_promotion['discount'], $p['discount'], $p['category_discount']);
+            if (is_numeric($productPromotion)) {
+                $result['products'][$k]['promotion_price'] = $p['price'] - ($p['price'] * ($productPromotion / 100));
+            }
+        }
+
         View::make('index', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');

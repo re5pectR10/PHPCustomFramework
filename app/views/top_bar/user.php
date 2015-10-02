@@ -10,7 +10,7 @@
             <a href="<?= \FW\Common::getBaseURL() ?>/user/cart">Cart</a>
         </li>
         <li>
-            <a href="<?= \FW\Common::getBaseURL() ?>/user/products">Your Products</a>
+            <a href="<?= \FW\Common::getBaseURL() ?>/user/<?= \FW\Auth::getUserId() ?>/products">Your Products</a>
         </li>
         <?php if($isEditor): ?>
             <li>

@@ -21,7 +21,10 @@
                             <?php if(\FW\Auth::isAuth()) : ?>
                             <a class="pull-right btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/add/<?= $product['id'] ?>">Add to Cart</a>
                             <?php endif; ?>
-                            <h4 class="pull-right">Price: <?= $product['price'] ?></h4>
+                            <?php if (isset($product['promotion_price'])) : ?>
+                                <h2 class="pull-right"><?= $product['promotion_price'] ?></h2>
+                            <?php endif; ?>
+                            <h4 class="<?= isset($product['promotion_price']) ? 'strike' : '' ?> pull-right"><?= $product['price'] ?></h4>
                             <h4><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $product['id'] ?>"><?= $product['name'] ?></a>
                             </h4>
                             <?php if($isEditor): ?>

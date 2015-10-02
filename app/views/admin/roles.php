@@ -18,7 +18,8 @@
                     <tr>
                         <th>User</th>
                         <th>Role</th>
-                        <th>For</th>
+                        <th>Tools</th>
+                        <th>User Products</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,6 +41,9 @@
                                 <a class="btn btn-warning" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/editor">Make Editor</a>
                             <?php endif; ?>
                                 <a class="btn btn-danger" href="<?= \FW\Common::getBaseURL() ?>/admin/ban/<?= $u['id'] ?>">Ban</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-default" href="<?= \FW\Common::getBaseURL() ?>/user/<?= \FW\Auth::getUserId() ?>/products">User Products</a>
                             </td>
                         </tr>
                     <?php

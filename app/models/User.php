@@ -96,4 +96,10 @@ class User extends Model {
         $this->db->execute(array($id));
         return $this->db->fetchRowAssoc();
     }
+
+    public function addProduct($user_id, $product_id, $quantity, $price) {
+        $this->db->prepare('insert into user_products(user_id,product_id,quantity,bought_price) values(?,?,?,?)');
+        $this->db->execute(array($user_id, $product_id, $quantity, $price));
+        return $this->db->getAffectedRows();
+    }
 } 

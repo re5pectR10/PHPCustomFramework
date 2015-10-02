@@ -20,9 +20,15 @@ class ProductController {
         $category = new Category();
         $products = new Product();
         $prom = new Promotion();
-        $result['products']=$products->getProducts();
         $result['categories']=$category->getCategories();
         $result['title']='Shop';
+        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
+        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+        if ($result['isEditor']) {
+            $result['products']=$products->getProductsWitnUnavailable();
+        } else {
+            $result['products']=$products->getProducts();
+        }
         $all_promotion = $prom->getHighestActivePromotion();
         foreach($result['products'] as $k => $p) {
             $productPromotion = max($all_promotion['discount'], $p['discount'], $p['category_discount']);
@@ -30,8 +36,7 @@ class ProductController {
                 $result['products'][$k]['promotion_price'] = $p['price'] - ($p['price'] * ($productPromotion / 100));
             }
         }
-        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
-        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+
         View::make('index', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');
@@ -49,13 +54,24 @@ class ProductController {
         $category = new Category();
         $comments = new Comment();
         $product = new Product();
-        $result['product']=$product->getProduct($id);
+        $prom = new Promotion();
         $result['comments']=$comments->getCommentsByProduct($id);
         $result['categories']=$category->getCategories();
-        $result['title']='Shop';
-        $result['currentCategory']=$result['product']['category_id'];
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+        if ($result['isEditor']) {
+            $result['product']=$product->getProductWitnUnavailable($id);
+        } else {
+            $result['product']=$product->getProduct($id);
+        }
+        $all_promotion = $prom->getHighestActivePromotion();
+        $productPromotion = max($all_promotion['discount'], $result['product']['discount'], $result['product']['category_discount']);
+        if (is_numeric($productPromotion)) {
+            $result['product']['promotion_price'] = $result['product']['price'] - ($result['product']['price'] * ($productPromotion / 100));
+        }
+        $result['title']='Shop';
+        $result['currentCategory']=$result['product']['category_id'];
+
         View::make('product', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');
@@ -118,7 +134,13 @@ class ProductController {
 
     public function getEdit($id) {
         $product = new Product();
-        $result = array('product' => $product->getProduct($id));
+        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
+        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+        if ($result['isEditor']) {
+            $result = array('product' => $product->getProductWitnUnavailable($id));
+        } else {
+            $result = array('product' => $product->getProduct($id));
+        }
         $result['title']='Shop';
         $result['action'] = '/product/edit/' . $result['product']['id'];
         $result['submit'] = 'edit';
