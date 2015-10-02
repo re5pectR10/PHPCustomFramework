@@ -11,7 +11,7 @@ Route::GET('', array('use' => 'ProductController@index'));
 Route::Group('user', array(), function() {
     Route::GET('', array('use'=>'UserController@getProfile', 'before' => 'auth'));
     Route::POST('', array('use'=>'UserController@editProfile', 'before' => 'auth|csrf'));
-    Route::GET('/{id:int}', array('use'=>'UserController@getUser'));
+    //Route::GET('/{id:int}', array('use'=>'UserController@getUser'));
     Route::GET('/register', array('use'=>'UserController@getRegister'));
     Route::POST('/register', array('use'=>'UserController@postRegister', 'before' => 'csrf'));
     Route::GET('/login', array('use'=>'UserController@getLogin'));
@@ -21,6 +21,7 @@ Route::Group('user', array(), function() {
     Route::GET('/cart/add/{id:int}', array('use'=>'CartController@add', 'before' => 'auth'));
     Route::POST('/cart/product/{id:int}/quantity', array('use'=>'CartController@changeQuantity', 'before' => 'auth|csrf'));
     Route::GET('/{id:int}/products', array('use'=>'UserController@getProducts', 'before' => 'auth'));
+    Route::POST('/product/{id:int}/sell', array('use'=>'UserController@sellProduct', 'before' => 'auth|csrf'));
     Route::GET('/cart/buy', array('use'=>'CartController@buy', 'before' => 'auth'));
     Route::GET('/cart/product/{id:int?}/remove', array('use'=>'CartController@removeProduct'));
 });
@@ -49,8 +50,8 @@ Route::Group('promotion', array(), function() {
     Route::GET('/delete/{id:int}', array('use' => 'PromotionController@delete', 'before' => 'auth', 'roles' => 'editor|admin'));
     Route::GET('/add', array('use' => 'PromotionController@getAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
     Route::POST('/add', array('use' => 'PromotionController@postAdd', 'before' => 'auth', 'roles' => 'editor|admin'));
-    Route::GET('/edit/{id:int}', array('use' => 'PromotionController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
-    Route::POST('/edit/{id:int}', array('use' => 'PromotionController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+    //Route::GET('/edit/{id:int}', array('use' => 'PromotionController@getEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
+    //Route::POST('/edit/{id:int}', array('use' => 'PromotionController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
 });
 
 Route::GET('comment/delete/{id:int}', array('use' => 'CommentController@delete', 'before' => 'auth'));

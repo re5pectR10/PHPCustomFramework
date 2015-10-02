@@ -7,18 +7,16 @@
 
             <div class="col-md-12">
 
-                <h1>Your Cart</h1>
-                <h2>Your Cash: <?= $user_cash ?></h2>
-                <a class="btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/buy">Buy</a>
+                <h1>Your Products</h1>
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>Product</th>
                         <th>Quantity</th>
+                        <th>Bought Price</th>
                         <th>Total Bought Price</th>
-                        <th>Quantity To Sell</th>
-                        <th>Sell Price</th>
-                        <th></th>
+                        <th>Current Price</th>
+                        <th>Sell Quantity</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -27,15 +25,15 @@
                         ?>
                         <tr>
                             <td><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $item['id'] ?>"><?= $item['name'] ?></a></td>
+                            <td><?= $item['quantity'] ?></td>
+                            <td><?= $item['bought_price'] ?></td>
+                            <td class="price"><?= number_format($item['bought_price'] * $item['quantity'], 2) ?></td>
+                            <td><?= $item['current_price'] ?></td>
                             <td>
-                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL() . '/user/cart/product/' . $item['id'] . '/quantity')) ?>
-                                <?= \FW\Form::text(array('value' => $item['cart_quantity'], 'name' => 'quantity')) ?>
-                                <?= \FW\Form::submit(array('value' => 'Change', 'name' => 'submit')) ?>
+                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL() . '/user/product/' . $item['id'] . '/sell')) ?>
+                                <?= \FW\Form::text(array('name' => 'quantity')) ?>
+                                <?= \FW\Form::submit(array('value' => 'Sell', 'name' => 'submit', 'class' => 'btn btn-success')) ?>
                                 <?= \FW\Form::close() ?>
-                            </td>
-                            <td class="price"><?= $item['price'] * $item['cart_quantity'] ?></td>
-                            <td>
-                                <a class="btn btn-danger" href="<?= \FW\Common::getBaseURL() ?>/user/cart/product/<?= $item['id'] ?>/remove">Remove</a>
                             </td>
                         </tr>
                     <?php

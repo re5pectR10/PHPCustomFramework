@@ -6,6 +6,7 @@ use FW\Redirect;
 use FW\Session;
 use FW\Validation;
 use FW\View;
+use Models\Product;
 use Models\User;
 use Models\UserModel;
 
@@ -117,7 +118,53 @@ class UserController{
             Redirect::back();
         }
 
-        
+        $user = new User();
+        $result['products'] = $user->getProducts(Auth::getUserId());
+        $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
+        $result['isAdmin'] = Auth::isUserInRole(array('admin'));
+        View::make('user.products', $result);
+        View::appendTemplateToLayout('topBar', 'top_bar/user');
+        View::appendTemplateToLayout('header', 'includes/header')
+            ->appendTemplateToLayout('footer', 'includes/footer')
+            ->render();
+    }
+
+    public function sellProduct($id, $quantity) {
+        $user = new User();
+        $product = new Product();
+        $user->startTran();
+
+        if ($user->changeProductQuantity(Auth::getUserId(), $id, $quantity) !== 1) {
+            Session::setError('not enough products');
+            $user->rollback();
+            Redirect::back();
+        }
+
+        $userProduct = $user->getProduct(Auth::getUserId(), $id);
+        if ($userProduct['quantity'] < 1) {
+            if ($user->deleteProduct(Auth::getUserId(), $id) !== 1) {
+                Session::setError('something went wrong');
+                $user->rollback();
+                Redirect::back();
+            }
+        }
+
+        $soldProducts = $product->getProduct($id);
+        if ($product->addQuantity($soldProducts['id'], $quantity) !== 1) {
+            Session::setError('something went wrong');
+            $user->rollback();
+            Redirect::back();
+        }
+
+        if ($user->addCash(Auth::getUserId(), $soldProducts['price'] * $quantity) !== 1) {
+            Session::setError('something went wrong');
+            $user->rollback();
+            Redirect::back();
+        }
+
+        $user->commit();
+        Session::setMessage('You sold ' . $quantity . ' of ' . $userProduct['name']);
+        Redirect::to('/user/' . Auth::getUserId() . '/products');
     }
 //    /**
 //     * @var test

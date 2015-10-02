@@ -48,6 +48,12 @@ class Product extends Model {
         return $this->db->getAffectedRows();
     }
 
+    public function addQuantity($id,$quantity) {
+        $this->db->prepare('update products set quantity=quantity+? where is_deleted=false and id=?');
+        $this->db->execute(array($quantity, $id));
+        return $this->db->getAffectedRows();
+    }
+
     public function getProductsForCategory($id) {
         $this->db->prepare('select p.id,p.name,p.quantity,p.price,p.description,(select count(*) from comments where product_id=p.id) as comments_count,(select max(discount) from promotoins where product_id=p.id and exp_date>?) as discount,(select max(discount) from promotoins where category_id=p.category_id and exp_date>?) as category_discount from products as p where quantity>0 and  p.is_deleted=false and p.category_id=?');
         $this->db->execute(array(date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $id));

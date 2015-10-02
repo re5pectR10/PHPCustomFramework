@@ -102,4 +102,34 @@ class User extends Model {
         $this->db->execute(array($user_id, $product_id, $quantity, $price));
         return $this->db->getAffectedRows();
     }
-} 
+
+    public function getProducts($user_id) {
+        $this->db->prepare('select p.id,p.name,up.quantity,up.bought_price,p.price as current_price from user_products as up join products as p on p.id=up.product_id where up.user_id=?');
+        $this->db->execute(array($user_id));
+        return $this->db->fetchAllAssoc();
+    }
+
+    public function getProduct($user_id, $product_id) {
+        $this->db->prepare('select p.id,p.name,up.quantity,up.bought_price,p.price as current_price from user_products as up join products as p on p.id=up.product_id where up.user_id=? and p.id=?');
+        $this->db->execute(array($user_id, $product_id));
+        return $this->db->fetchRowAssoc();
+    }
+
+    public function changeProductQuantity($user_id, $product_id, $quantity) {
+        $this->db->prepare('update user_products set quantity=quantity-? where user_id=? and product_id=? and quantity>=?');
+        $this->db->execute(array($quantity, $user_id, $product_id, $quantity));
+        return $this->db->getAffectedRows();
+    }
+
+    public function deleteProduct($user_id, $product_id) {
+        $this->db->prepare('delete from user_products where user_id=? and product_id=? and quantity<1');
+        $this->db->execute(array($user_id, $product_id));
+        return $this->db->getAffectedRows();
+    }
+
+    public function addCash($id, $money) {
+        $this->db->prepare('update users set cash=cash+? where id=?');
+        $this->db->execute(array($money, $id));
+        return $this->db->getAffectedRows();
+    }
+}
