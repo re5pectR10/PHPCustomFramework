@@ -31,7 +31,7 @@ class FrontController {
         $_uri = $this->router->getURI();
         $uriParams = array_filter(explode('/', $_uri), 'strlen');
         $controllerName = '';
-        $controllerMethod = '';
+        $controllerMethod = '';//var_dump($_uri);
         $paramsFromGET = array();//var_dump(Route::getRouters());
         foreach(Route::getRouters() as $route){
             $paramsFromGET = array();
@@ -39,7 +39,6 @@ class FrontController {
                 continue;
             }
 
-            // todo if auth
             $filter = explode('|', $route['details']['before']);
             if (in_array('auth', $filter)) {
                 if (!Auth::isAuth()) {
@@ -90,8 +89,15 @@ class FrontController {
             if(App::getInstance()->getConfig()->app['enable_default_routing']) {
                 $controllerName = App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.$uriParams[0].'Controller';
                 $controllerMethod = $uriParams[1];
-                for($i = 2; $i < count($uriParams); $i++) {
-                    array_push($paramsFromGET, $uriParams[$i]);
+                $r = new \ReflectionMethod($controllerName, $controllerMethod);
+                $params = $r->getParameters();
+                $index = 2;
+                foreach ($params as $param) {
+                    $paramsFromGET[$param->name] = $uriParams[$index];
+                    $index++;
+                }
+                for($i = $index; $i < count($uriParams); $i++) {
+                    $paramsFromGET[$i] = $uriParams[$i];
                 }
             } else {
                 $controllerName = App::getInstance()->getConfig()->app['controllers_namespace']. '\\'.App::getInstance()->getConfig()->app['default_controller'];

@@ -28,17 +28,17 @@ class Route {
     public static function Group($prefix, $details = array(), $func){
         if ($func instanceof \Closure) {
             self::$prefix .= $prefix;
-//            if (!empty(self::$details)) {
-//                $previousDetails = self::$details[count(self::$details) - 1];
-//                self::$details[] = $previousDetails;
-//                foreach($details as $key => $value) {
-//                    if ($key == 'roles' || $key == 'before') {
-//                        self::$details[count(self::$details) - 1][$key] .= '|' . $value;
-//                    }
-//                }
-//            } else {
-//                self::$details[] = $details;
-//            }
+            if (!empty(self::$details)) {
+                $previousDetails = self::$details[count(self::$details) - 1];
+                foreach($details as $key => $value) {
+                    if ($key == 'roles' || $key == 'before') {
+                        $previousDetails[$key] .= '|' . $value;
+                    }
+                }
+                self::$details[] = $previousDetails;
+            } else {
+                self::$details[] = $details;
+            }
             call_user_func($func);
             array_pop(self::$details);
             self::$prefix = substr(self::$prefix, 0, strlen(self::$prefix) - strlen($prefix));
@@ -65,11 +65,11 @@ class Route {
             $key = self::$index;
             self::$index++;
         }
-//        if (!empty(self::$details)) {
-//            foreach($details as $key => $value) {
-//                self::$details[count(self::$details) - 1][$key] .= '|' . $value;
-//            }
-//        }
+        if (!empty(self::$details)) {
+            foreach(self::$details[count(self::$details) - 1] as $k => $value) {
+                $details[$k] .= '|' . $value;
+            }
+        }
 
         self::$routes[$key] = array('url' => self::$prefix . $url, 'details' => $details, 'method' => $type);
     }

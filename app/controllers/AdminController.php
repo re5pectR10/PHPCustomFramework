@@ -7,13 +7,15 @@ use FW\Auth;
 use FW\Redirect;
 use FW\Session;
 use FW\View;
-use Models\User;
 
 class AdminController {
 
+    /**
+     * @var \Models\User
+     */
+    private $user;
     public function getUsers() {
-        $users = new User();
-        $result['users'] = $users->getUsersWithRoles();
+        $result['users'] = $this->user->getUsersWithRoles();
         $result['title']='Shop';
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
@@ -30,9 +32,8 @@ class AdminController {
             Redirect::back();
         }
 
-        $users = new User();
         if ($role == 'user') {
-            if ($users->deleteUserRole($id) === 0) {
+            if ($this->user->deleteUserRole($id) === 0) {
                 Session::setError('something went wrong');
                 Redirect::back();
             }
@@ -40,7 +41,7 @@ class AdminController {
             Session::setMessage('Done');
             Redirect::to('/admin/users');
         }
-        if ($users->setRole($id, $role) !== 1) {
+        if ($this->user->setRole($id, $role) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }
@@ -50,8 +51,7 @@ class AdminController {
     }
 
     public function banUser($id) {
-        $user = new User();
-        if ($user->banUser($id) !== 1) {
+        if ($this->user->banUser($id) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }

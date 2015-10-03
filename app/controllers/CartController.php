@@ -3,38 +3,42 @@
 namespace Controllers;
 
 
-use FW\App;
 use FW\Auth;
-use FW\DB;
 use FW\Redirect;
 use FW\Session;
 use FW\View;
-use Models\Product;
-use Models\Promotion;
 use Models\User;
 
 class CartController {
 
+    /**
+     * @var \Models\Product
+     */
+    private $product;
+    /**
+     * @var \Models\Promotion
+     */
+    private $promotion;
+    /**
+     * @var \Models\User
+     */
+    private $user;
     public  function getAll() {
-        $sess=App::getInstance()->getSession();
         $cart = array();
-        if ($sess->containKey('cart')) {
-            $cart = $sess->cart;
+        if (Session::containKey('cart')) {
+            $cart = Session::get('cart');
         }
         $result['title']='Shop';
         $result['products'] = $this->getProductsFromCart($cart);
-        //var_dump($result['products']);
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
-        $user = new User();
-        $result['user_cash'] = $user->getUserMoney(Auth::getUserId());
+        $result['user_cash'] = $this->user->getUserMoney(Auth::getUserId());
         View::make('cart', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar/user');
         } else {
             View::appendTemplateToLayout('topBar', 'top_bar/guest');
         }
-//var_dump($_SESSION);
         View::appendTemplateToLayout('header', 'includes/header')
             ->appendTemplateToLayout('footer', 'includes/footer')
             ->appendTemplateToLayout('catMenu', 'side_bar/category_menu')
@@ -42,13 +46,11 @@ class CartController {
     }
 
     public function add($id) {
-        $sess=App::getInstance()->getSession();
-        if (!$sess->containKey('cart')) {
-            $sess->cart = array();
+        if (!Session::containKey('cart')) {
+            Session::set('cart', array());
         }
-        $cart = $sess->cart;
-        $product = new Product();
-        $result = $product->getProduct($id);
+        $cart = Session::get('cart');
+        $result = $this->product->getProduct($id);
         if (!array_key_exists($id, $cart)) {
             $cart[$id] = array(
                 'quantity' => 1,
@@ -58,13 +60,12 @@ class CartController {
         }
 
         Session::setMessage('added to cart');
-        $sess->cart = $cart;
+        Session::set('cart', $cart);
         Redirect::to('/category/'.$result['category_id']);
     }
 
     public function changeQuantity($id, $quantity) {
-        $sess=App::getInstance()->getSession();
-        if (!$sess->containKey('cart') || !array_key_exists($id, $sess->cart)) {
+        if (!Session::containKey('cart') || !array_key_exists($id, Session::get('cart'))) {
             throw new \Exception('This products dont exist in your cart', 500);
         }
 
@@ -73,8 +74,7 @@ class CartController {
     }
 
     public function removeProduct($id) {
-        $sess=App::getInstance()->getSession();
-        if (!$sess->containKey('cart') || !array_key_exists($id, $sess->cart)) {
+        if (!Session::containKey('cart') || !array_key_exists($id, Session::get('cart'))) {
             throw new \Exception('This products dont exist in your cart', 500);
         }
 
@@ -84,16 +84,13 @@ class CartController {
 
     public function buy() {
         $totalSum = 0;
-        $sess=App::getInstance()->getSession();
-        $cart = $sess->cart;
-        $products = new Product();
-        $user = new User();
+        $cart = Session::get('cart');
 
-        $products->startTran();
+        $this->product->startTran();
         $productsFromCart = $this->getProductsFromCart($cart);
         foreach($productsFromCart as $item) {
-            if ($products->changeQuantity($item['id'], $item['cart_quantity']) !== 1) {
-                $products->rollback();
+            if ($this->product->changeQuantity($item['id'], $item['cart_quantity']) !== 1) {
+                $this->product->rollback();
                 Session::setError('not enough available product');
                 Redirect::back();
             }
@@ -103,30 +100,28 @@ class CartController {
 
         $user = new User();
         if ($user->changeUserCash(Auth::getUserId(), $totalSum) !== 1) {
-            $products->rollback();
+            $this->product->rollback();
             Session::setError('not enough money');
             Redirect::back();
         }
         foreach($productsFromCart as $item) {
             if ($user->addProduct(Auth::getUserId(), $item['id'], $item['cart_quantity'], $item['price']) !== 1) {
-                $products->rollback();
+                $this->product->rollback();
                 Session::setError('something went wrong');
                 Redirect::back();
             }
         }
-        $products->commit();
-        unset($_SESSION['cart']);
+        $this->product->commit();
+        Session::remove('cart');
         Session::setMessage('Done');
         Redirect::to('user/cart');
     }
 
     private function getProductsFromCart($cart) {
-        $products = new Product();
-        $prom = new Promotion();
-        $all_promotion = $prom->getHighestActivePromotion();
+        $all_promotion = $this->promotion->getHighestActivePromotion();
         $productsFromCart = array();
         foreach($cart as $id => $q) {
-            if (($currentProduct = $products->getProduct($id))) {
+            if (($currentProduct = $this->product->getProduct($id))) {
                 $productPromotion = max($all_promotion['discount'], $currentProduct['discount'], $currentProduct['category_discount']);
                 if (is_numeric($productPromotion)) {
                     $currentProduct['price'] = $currentProduct['price'] - ($currentProduct['price'] * ($productPromotion / 100));

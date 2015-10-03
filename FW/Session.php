@@ -3,21 +3,22 @@
 namespace FW;
 
 class Session{
-    public function __construct($name, $lifetime = 3600, $path = null, $domain = null, $secure = false) {
-        if(strlen($name)<1){
+
+    public static function get($key) {
+        return $_SESSION[$key];
+    }
+
+    public static function set($key, $value) {
+        $_SESSION[$key] = $value;
+    }
+
+    public static function setSession($name, $lifetime = 3600, $path = null, $domain = null, $secure = false) {
+        if(strlen($name) < 1) {
             $name='_sess';
         }
         session_name($name);
         session_set_cookie_params($lifetime, $path, $domain, $secure, true);
         session_start();
-    }
-
-    public function __get($name) {
-        return $_SESSION[$name];
-    }
-
-    public function __set($name, $value) {
-        $_SESSION[$name] = $value;
     }
 
     public static function getError() {
@@ -29,6 +30,9 @@ class Session{
         return $error;
     }
 
+    public static function remove($key) {
+        unset($_SESSION[$key]);
+    }
     public static function hasError() {
         if (isset($_SESSION['error'])) {
             if (is_array($_SESSION['error'])) {
@@ -82,26 +86,23 @@ class Session{
         return $_SESSION['old_input'];
     }
 
-    public function getSession() {
+    public static function getSession() {
         return $_SESSION;
     }
 
-    public function containKey($key) {
+    public static function containKey($key) {
         return isset($_SESSION[$key]);
     }
 
-    public function destroySession() {
+    public static  function destroySession() {
         session_destroy();
     }
 
-    public function getSessionId() {
+    public static  function getSessionId() {
         return session_id();
     }
 
-    public function saveSession() {
+    public static  function saveSession() {
         session_write_close();
     }
 }
-
-
-

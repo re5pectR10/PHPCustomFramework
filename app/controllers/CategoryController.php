@@ -4,31 +4,36 @@ namespace Controllers;
 
 
 use FW\Auth;
-use FW\DB;
 use FW\Redirect;
 use FW\Session;
 use FW\View;
-use Models\Category;
-use Models\Product;
-use Models\Promotion;
 
 class CategoryController {
 
+    /**
+     * @var \Models\Category
+     */
+    private $category;
+    /**
+     * @var \Models\Product
+     */
+    private $product;
+    /**
+     * @var \Models\Promotion
+     */
+    private $promotion;
     public function getCategory($id) {
-        $category = new Category();
-        $products = new Product();
-        $prom = new Promotion();
-        $result['categories']=$category->getCategories();
+        $result['categories']=$this->category->getCategories();
         $result['title']='Shop';
         $result['currentCategory']=$id;
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         if ($result['isEditor']) {
-            $result['products']=$products->getProductsForCategoryWitnUnavailable($id);
+            $result['products']=$this->product->getProductsForCategoryWitnUnavailable($id);
         } else {
-            $result['products']=$products->getProductsForCategory($id);
+            $result['products']=$this->product->getProductsForCategory($id);
         }
-        $all_promotion = $prom->getHighestActivePromotion();
+        $all_promotion = $this->promotion->getHighestActivePromotion();
         foreach($result['products'] as $k => $p) {
             $productPromotion = max($all_promotion['discount'], $p['discount'], $p['category_discount']);
             if (is_numeric($productPromotion)) {
@@ -50,8 +55,7 @@ class CategoryController {
     }
 
     public function deleteCategory($id) {
-        $category = new Category();
-        if ($category->delete($id) !== 1) {
+        if ($this->category->delete($id) !== 1) {
             Session::setError('can not delete this category');
             Redirect::back();
         }
@@ -77,8 +81,7 @@ class CategoryController {
     }
 
     public function postAdd($name) {
-        $category = new Category();
-        if ($category->add($name) !== 1) {
+        if ($this->category->add($name) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }
@@ -88,8 +91,7 @@ class CategoryController {
     }
 
     public function getEdit($id) {
-        $cat = new Category();
-        $result = array('category' => $cat->getCategory($id));
+        $result = array('category' => $this->category->getCategory($id));
         $result['title']='Shop';
         $result['action'] = '/category/edit/' . $result['category']['id'];
         $result['submit'] = 'edit';
@@ -106,8 +108,7 @@ class CategoryController {
     }
 
     public function postEdit($id, $name) {
-        $category = new Category();
-        if ($category->edit($id, $name) !== 1) {
+        if ($this->category->edit($id, $name) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }

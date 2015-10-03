@@ -8,28 +8,38 @@ use FW\Redirect;
 use FW\Session;
 use FW\Validation;
 use FW\View;
-use Models\Category;
-use Models\Comment;
-use Models\Product;
 use Models\ProductModel;
-use Models\Promotion;
 
 class ProductController {
 
+    /**
+     * @var \Models\Category
+     */
+    private $category;
+    /**
+     * @var \Models\Product
+     */
+    private $product;
+    /**
+     * @var \Models\Promotion
+     */
+    private $promotion;
+    /**
+     * @var \Models\Comment
+     */
+    private $comment;
+
     public function index() {
-        $category = new Category();
-        $products = new Product();
-        $prom = new Promotion();
-        $result['categories']=$category->getCategories();
+        $result['categories']=$this->category->getCategories();
         $result['title']='Shop';
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         if ($result['isEditor']) {
-            $result['products']=$products->getProductsWitnUnavailable();
+            $result['products']=$this->product->getProductsWitnUnavailable();
         } else {
-            $result['products']=$products->getProducts();
+            $result['products']=$this->product->getProducts();
         }
-        $all_promotion = $prom->getHighestActivePromotion();
+        $all_promotion = $this->promotion->getHighestActivePromotion();
         foreach($result['products'] as $k => $p) {
             $productPromotion = max($all_promotion['discount'], $p['discount'], $p['category_discount']);
             if (is_numeric($productPromotion)) {
@@ -51,20 +61,16 @@ class ProductController {
     }
 
     public function getProduct($id) {
-        $category = new Category();
-        $comments = new Comment();
-        $product = new Product();
-        $prom = new Promotion();
-        $result['comments']=$comments->getCommentsByProduct($id);
-        $result['categories']=$category->getCategories();
+        $result['comments']=$this->comment->getCommentsByProduct($id);
+        $result['categories']=$this->category->getCategories();
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         if ($result['isEditor']) {
-            $result['product']=$product->getProductWitnUnavailable($id);
+            $result['product']=$this->product->getProductWitnUnavailable($id);
         } else {
-            $result['product']=$product->getProduct($id);
+            $result['product']=$this->product->getProduct($id);
         }
-        $all_promotion = $prom->getHighestActivePromotion();
+        $all_promotion = $this->promotion->getHighestActivePromotion();
         $productPromotion = max($all_promotion['discount'], $result['product']['discount'], $result['product']['category_discount']);
         if (is_numeric($productPromotion)) {
             $result['product']['promotion_price'] = $result['product']['price'] - ($result['product']['price'] * ($productPromotion / 100));
@@ -89,8 +95,7 @@ class ProductController {
         $result['title']='Shop';
         $result['action'] = '/product/add';
         $result['submit'] = 'add';
-        $cat = new Category();
-        $categories = $cat->getCategories();
+        $categories = $this->category->getCategories();
         foreach($categories as $c) {
             $currentCategory = array();
             $currentCategory['text'] = $c['name'];
@@ -122,8 +127,7 @@ class ProductController {
             Session::setError($validator->getErrors()[0]);
             Redirect::back();
         }
-        $productDB = new Product();
-        if ($productDB->add($product->name, $product->description,$product->price,$product->quantity,$product->category_id) !== 1) {
+        if ($this->product->add($product->name, $product->description,$product->price,$product->quantity,$product->category_id) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }
@@ -133,19 +137,17 @@ class ProductController {
     }
 
     public function getEdit($id) {
-        $product = new Product();
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         if ($result['isEditor']) {
-            $result = array('product' => $product->getProductWitnUnavailable($id));
+            $result = array('product' => $this->product->getProductWitnUnavailable($id));
         } else {
-            $result = array('product' => $product->getProduct($id));
+            $result = array('product' => $this->product->getProduct($id));
         }
         $result['title']='Shop';
         $result['action'] = '/product/edit/' . $result['product']['id'];
         $result['submit'] = 'edit';
-        $cat = new Category();
-        $categories = $cat->getCategories();
+        $categories = $this->category->getCategories();
         foreach($categories as $c) {
             $currentCategory = array();
             $currentCategory['text'] = $c['name'];
@@ -180,8 +182,7 @@ class ProductController {
             Session::setError($validator->getErrors()[0]);
             Redirect::back();
         }
-        $productDB = new Product();
-        if ($productDB->edit($id, $product->name, $product->description,$product->price,$product->quantity,$product->category_id) !== 1) {
+        if ($this->product->edit($id, $product->name, $product->description,$product->price,$product->quantity,$product->category_id) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }
@@ -191,8 +192,7 @@ class ProductController {
     }
 
     public function delete($id) {
-        $product = new Product();
-        if ($product->delete($id) !== 1) {
+        if ($this->product->delete($id) !== 1) {
             Session::setError('can not delete this product');
             Redirect::back();
         }

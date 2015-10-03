@@ -73,12 +73,7 @@ class App {
 
         $_sess = $this->_config->app['session'];
         if ($_sess['autostart']) {
-            if ($_sess['type'] == 'native') {
-                $_s = new Session($_sess['name'], $_sess['lifetime'], $_sess['path'], $_sess['domain'], $_sess['secure']);
-            } else {
-                throw new \Exception('No valid session', 500);
-            }
-            $this->setSession($_s);
+            Session::setSession($_sess['name'], $_sess['lifetime'], $_sess['path'], $_sess['domain'], $_sess['secure']);
         }
         //Auth::removeAuth();
 //unset($_SESSION['id']);

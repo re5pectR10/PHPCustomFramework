@@ -15,9 +15,7 @@ class DependencyProvider {
             'dependencies' => $dependency
         );
     }
-public static function r() {
-    return new static;
-}
+
     public static function injectDependenciesToController($controller) {
         if ($controller == null) {
             return null;

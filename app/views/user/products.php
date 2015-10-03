@@ -15,6 +15,7 @@
                         <th>Quantity</th>
                         <th>Bought Price</th>
                         <th>Total Bought Price</th>
+                        <th>Bought On</th>
                         <th>Current Price</th>
                         <th>Sell Quantity</th>
                     </tr>
@@ -28,9 +29,10 @@
                             <td><?= $item['quantity'] ?></td>
                             <td><?= $item['bought_price'] ?></td>
                             <td class="price"><?= number_format($item['bought_price'] * $item['quantity'], 2) ?></td>
+                            <td><?= $item['bought_on'] ?></td>
                             <td><?= $item['current_price'] ?></td>
                             <td>
-                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL() . '/user/product/' . $item['id'] . '/sell')) ?>
+                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL() . '/user/product/' . $item['id'] . '/sell/' . $item['user_product_id'])) ?>
                                 <?= \FW\Form::text(array('name' => 'quantity')) ?>
                                 <?= \FW\Form::submit(array('value' => 'Sell', 'name' => 'submit', 'class' => 'btn btn-success')) ?>
                                 <?= \FW\Form::close() ?>
@@ -40,14 +42,6 @@
                     endforeach;
                     ?>
                     </tbody>
-                    <tfoot>
-                    <tr class="summary">
-                        <td></td>
-                        <td></td>
-                        <td id="total_price"></td>
-                        <td></td>
-                    </tr>
-                    </tfoot>
                 </table>
                 <p class="alert-danger"><?= \FW\Session::hasError() ? \FW\Session::getError() : '' ?></p>
             </div>

@@ -1,9 +1,14 @@
+<?php
+/**
+ * @var Controllers\Admin\Index $model
+ */
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title></title>
 </head>
-<body><?php //var_dump(get_defined_vars()); ?>
+<body><?php echo $model->aeee; ?>
 <?php
 echo \FW\Form::open(array('action'=>\FW\Common::getBaseURL().'/users/test/asd', 'name'=>'asd')) ;
 echo \FW\Form::text(array('name' => 'a'));

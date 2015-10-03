@@ -7,10 +7,13 @@ use FW\Auth;
 use FW\Redirect;
 use FW\Session;
 use FW\Validation;
-use Models\Comment;
 
 class CommentController {
 
+    /**
+     * @var \Models\Comment
+     */
+    private $comment;
     public function post($id, $content) {
         $validator = new Validation();
         $validator->setRule('required', $content);
@@ -19,8 +22,7 @@ class CommentController {
             Redirect::back();
         }
 
-        $comment = new Comment();
-        if ($comment->add(Auth::getUserId(), $id, $content) !== 1) {
+        if ($this->comment->add(Auth::getUserId(), $id, $content) !== 1) {
             Session::setError('something went wrong');
             Redirect::back();
         }
@@ -30,9 +32,8 @@ class CommentController {
     }
 
     public function delete($id) {
-        $comment = new Comment();
-        if (Auth::isUserInRole(array('admin')) || $comment->getComment($id)['user_id'] == Auth::getUserId()) {
-            if ($comment->delete($id) !== 1) {
+        if (Auth::isUserInRole(array('admin')) || $this->comment->getComment($id)['user_id'] == Auth::getUserId()) {
+            if ($this->comment->delete($id) !== 1) {
                 Session::setError('something went wrong');
                 Redirect::back();
             }

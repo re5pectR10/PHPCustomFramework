@@ -21,7 +21,7 @@ Route::Group('user', array(), function() {
     Route::GET('/cart/add/{id:int}', array('use'=>'CartController@add', 'before' => 'auth'));
     Route::POST('/cart/product/{id:int}/quantity', array('use'=>'CartController@changeQuantity', 'before' => 'auth|csrf'));
     Route::GET('/{id:int}/products', array('use'=>'UserController@getProducts', 'before' => 'auth'));
-    Route::POST('/product/{id:int}/sell', array('use'=>'UserController@sellProduct', 'before' => 'auth|csrf'));
+    Route::POST('/product/{id:int}/sell/{upid:int}', array('use'=>'UserController@sellProduct', 'before' => 'auth|csrf'));
     Route::GET('/cart/buy', array('use'=>'CartController@buy', 'before' => 'auth'));
     Route::GET('/cart/product/{id:int?}/remove', array('use'=>'CartController@removeProduct'));
 });
@@ -54,11 +54,15 @@ Route::Group('promotion', array(), function() {
     //Route::POST('/edit/{id:int}', array('use' => 'PromotionController@postEdit', 'before' => 'auth', 'roles' => 'editor|admin'));
 });
 
+Route::Group('admin', array('roles' => 'admin', 'before' => 'auth'), function() {
+    Route::GET('/users', array('use' => 'AdminController@getUsers'));
+    Route::GET('/make/{id:int}/{role}', array('use' => 'AdminController@setRole'));
+    Route::GET('/ban/{id:int}', array('use' => 'AdminController@banUser'));
+});
+
 Route::GET('comment/delete/{id:int}', array('use' => 'CommentController@delete', 'before' => 'auth'));
-Route::GET('admin/users', array('use' => 'AdminController@getUsers', 'before' => 'auth', 'roles' => 'admin'));
-Route::GET('admin/make/{id:int}/{role}', array('use' => 'AdminController@setRole', 'before' => 'auth', 'roles' => 'admin'));
-Route::GET('admin/ban/{id:int}', array('use' => 'AdminController@banUser', 'before' => 'auth', 'roles' => 'admin'));
-//Route::GET('users/{id:int}/edit', array('use'=>'UsersController@EditUser3','before'=>'csrf'));
+
+//Route::GET('test', array('use'=>'test@EditUser3'));
 ////Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 ////Route::GET('users/edit', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 //Route::GET('users/delete/{sas:int}/{sss}', array('use'=>'UsersController@EditUser2','before'=>'csrf','roles'=>'admin|edit'));

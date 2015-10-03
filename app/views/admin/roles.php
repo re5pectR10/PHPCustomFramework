@@ -43,7 +43,7 @@
                                 <a class="btn btn-danger" href="<?= \FW\Common::getBaseURL() ?>/admin/ban/<?= $u['id'] ?>">Ban</a>
                             </td>
                             <td>
-                                <a class="btn btn-default" href="<?= \FW\Common::getBaseURL() ?>/user/<?= \FW\Auth::getUserId() ?>/products">User Products</a>
+                                <a class="btn btn-default" href="<?= \FW\Common::getBaseURL() ?>/user/<?= $u['id'] ?>/products">User Products</a>
                             </td>
                         </tr>
                     <?php

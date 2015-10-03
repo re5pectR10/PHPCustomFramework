@@ -6,11 +6,18 @@ use FW\Redirect;
 use FW\Session;
 use FW\Validation;
 use FW\View;
-use Models\Product;
-use Models\User;
 use Models\UserModel;
 
 class UserController{
+
+    /**
+     * @var \Models\Product
+     */
+    private $product;
+    /**
+     * @var \Models\User
+     */
+    private $user;
 
     public function getRegister() {
         $result['title']='Shop';
@@ -37,8 +44,7 @@ class UserController{
             Redirect::back();
         }
 
-        $userModel = new User();
-        if (($result = $userModel->register($user->username, $user->email, $user->password)) !== 1) {
+        if (($result = $this->user->register($user->username, $user->email, $user->password)) !== 1) {
             Session::setError($result);
             Redirect::back();
         }
@@ -68,8 +74,7 @@ class UserController{
             Redirect::back();
         }
 
-        $u = new User();
-        if ($u->isBanned(Auth::getUserId())['is_banned'] == true) {
+        if ($this->user->isBanned(Auth::getUserId())['is_banned'] == true) {
             Auth::removeAuth();
             Session::setError('you are banned');
             Redirect::back();
@@ -84,10 +89,9 @@ class UserController{
     }
 
     public function getProfile() {
-        $user = new User();
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
-        $result['user'] = $user->getUser(Auth::getUserId());
+        $result['user'] = $this->user->getUser(Auth::getUserId());
         View::make('user.profile', $result);
         View::appendTemplateToLayout('topBar', 'top_bar/user');
         View::appendTemplateToLayout('header', 'includes/header')
@@ -97,7 +101,6 @@ class UserController{
     }
 
     public function editProfile(UserModel $user, $new_password) {
-        $userDB = new User();
         $validator = new Validation();
         $validator->setRule('required', $user->email);
         $validator->setRule('required', $user->password);
@@ -106,7 +109,7 @@ class UserController{
             Redirect::back();
         }
 
-        if ($userDB->editUser(Auth::getUserId(), $user->email, $new_password, $user->password) !== 1) {
+        if ($this->user->editUser(Auth::getUserId(), $user->email, $new_password, $user->password) !== 1) {
             Redirect::back();
         }
 
@@ -118,8 +121,7 @@ class UserController{
             Redirect::back();
         }
 
-        $user = new User();
-        $result['products'] = $user->getProducts(Auth::getUserId());
+        $result['products'] = $this->user->getProducts($id);
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         $result['isAdmin'] = Auth::isUserInRole(array('admin'));
         View::make('user.products', $result);
@@ -129,40 +131,38 @@ class UserController{
             ->render();
     }
 
-    public function sellProduct($id, $quantity) {
-        $user = new User();
-        $product = new Product();
-        $user->startTran();
+    public function sellProduct($id, $quantity, $upid) {
+        $this->user->startTran();
 
-        if ($user->changeProductQuantity(Auth::getUserId(), $id, $quantity) !== 1) {
+        if ($this->user->changeProductQuantity(Auth::getUserId(), $id, $quantity, $upid) !== 1) {
             Session::setError('not enough products');
-            $user->rollback();
+            $this->user->rollback();
             Redirect::back();
         }
 
-        $userProduct = $user->getProduct(Auth::getUserId(), $id);
+        $userProduct = $this->user->getProduct(Auth::getUserId(), $id, $upid);
         if ($userProduct['quantity'] < 1) {
-            if ($user->deleteProduct(Auth::getUserId(), $id) !== 1) {
+            if ($this->user->deleteProduct(Auth::getUserId(), $id, $upid) !== 1) {
                 Session::setError('something went wrong');
-                $user->rollback();
+                $this->user->rollback();
                 Redirect::back();
             }
         }
 
-        $soldProducts = $product->getProduct($id);
-        if ($product->addQuantity($soldProducts['id'], $quantity) !== 1) {
+        $soldProducts = $this->product->getProduct($id);
+        if ($this->product->addQuantity($soldProducts['id'], $quantity) !== 1) {
             Session::setError('something went wrong');
-            $user->rollback();
+            $this->user->rollback();
             Redirect::back();
         }
 
-        if ($user->addCash(Auth::getUserId(), $soldProducts['price'] * $quantity) !== 1) {
+        if ($this->user->addCash(Auth::getUserId(), $soldProducts['price'] * $quantity) !== 1) {
             Session::setError('something went wrong');
-            $user->rollback();
+            $this->user->rollback();
             Redirect::back();
         }
 
-        $user->commit();
+        $this->user->commit();
         Session::setMessage('You sold ' . $quantity . ' of ' . $userProduct['name']);
         Redirect::to('/user/' . Auth::getUserId() . '/products');
     }

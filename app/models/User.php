@@ -98,32 +98,44 @@ class User extends Model {
     }
 
     public function addProduct($user_id, $product_id, $quantity, $price) {
-        $this->db->prepare('insert into user_products(user_id,product_id,quantity,bought_price) values(?,?,?,?)');
-        $this->db->execute(array($user_id, $product_id, $quantity, $price));
+        $this->db->prepare('insert into user_products(user_id,product_id,quantity,bought_price,bought_on) values(?,?,?,?,?)');
+        $this->db->execute(array($user_id, $product_id, $quantity, $price, date("Y-m-d")));
         return $this->db->getAffectedRows();
     }
 
+//    public function productExist($user_id, $product_id) {
+//        $this->db->prepare('select id from user_products where user_id=? and product_id=?');
+//        $this->db->execute(array($user_id, $product_id));
+//        return $this->db->getAffectedRows();
+//    }
+//
+//    public function decreaseProductQuantity($user_id, $product_id, $quantity, $user_product_id) {
+//        $this->db->prepare('update user_products set quantity=quantity-? where user_id=? and product_id=? and quantity>=? and id=?');
+//        $this->db->execute(array($quantity, $user_id, $product_id, $quantity, $user_product_id));
+//        return $this->db->getAffectedRows();
+//    }
+
     public function getProducts($user_id) {
-        $this->db->prepare('select p.id,p.name,up.quantity,up.bought_price,p.price as current_price from user_products as up join products as p on p.id=up.product_id where up.user_id=?');
+        $this->db->prepare('select up.id as user_product_id,p.id,p.name,up.quantity,up.bought_price,up.bought_on,p.price as current_price from user_products as up join products as p on p.id=up.product_id where up.user_id=?');
         $this->db->execute(array($user_id));
         return $this->db->fetchAllAssoc();
     }
 
-    public function getProduct($user_id, $product_id) {
-        $this->db->prepare('select p.id,p.name,up.quantity,up.bought_price,p.price as current_price from user_products as up join products as p on p.id=up.product_id where up.user_id=? and p.id=?');
-        $this->db->execute(array($user_id, $product_id));
+    public function getProduct($user_id, $product_id, $upid) {
+        $this->db->prepare('select p.id,p.name,up.quantity,up.bought_price,up.bought_on,p.price as current_price from user_products as up join products as p on p.id=up.product_id where up.user_id=? and p.id=? and up.id=?');
+        $this->db->execute(array($user_id, $product_id, $upid));
         return $this->db->fetchRowAssoc();
     }
 
-    public function changeProductQuantity($user_id, $product_id, $quantity) {
-        $this->db->prepare('update user_products set quantity=quantity-? where user_id=? and product_id=? and quantity>=?');
-        $this->db->execute(array($quantity, $user_id, $product_id, $quantity));
+    public function changeProductQuantity($user_id, $product_id, $quantity, $user_product_id) {
+        $this->db->prepare('update user_products set quantity=quantity-? where user_id=? and product_id=? and quantity>=? and id=?');
+        $this->db->execute(array($quantity, $user_id, $product_id, $quantity, $user_product_id));
         return $this->db->getAffectedRows();
     }
 
-    public function deleteProduct($user_id, $product_id) {
-        $this->db->prepare('delete from user_products where user_id=? and product_id=? and quantity<1');
-        $this->db->execute(array($user_id, $product_id));
+    public function deleteProduct($user_id, $product_id, $user_product_id) {
+        $this->db->prepare('delete from user_products where user_id=? and product_id=? and quantity<1 and id=?');
+        $this->db->execute(array($user_id, $product_id, $user_product_id));
         return $this->db->getAffectedRows();
     }
 

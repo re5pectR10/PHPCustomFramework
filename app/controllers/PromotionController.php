@@ -8,16 +8,25 @@ use FW\Redirect;
 use FW\Session;
 use FW\Validation;
 use FW\View;
-use Models\Category;
-use Models\Product;
-use Models\Promotion;
 use Models\PromotionModel;
 
 class PromotionController {
 
+    /**
+     * @var \Models\Promotion
+     */
+    private $promotion;
+    /**
+     * @var \Models\Category
+     */
+    private $category;
+    /**
+     * @var \Models\Product
+     */
+    private $product;
+
     public function getAll() {
-        $promotions = new Promotion();
-        $result['promotions'] = $promotions->getPromotions();
+        $result['promotions'] = $this->promotion->getPromotions();
         $result['isEditor'] = Auth::isUserInRole(array('editor', 'admin'));
         View::make('promotion.promotions', $result);
         if (Auth::isAuth()) {
@@ -32,8 +41,7 @@ class PromotionController {
     }
 
     public function delete($id) {
-        $prom = new Promotion();
-        if ($prom->delete($id) !== 1) {
+        if ($this->promotion->delete($id) !== 1) {
             Session::setError('can not delete this product');
             Redirect::back();
         }
@@ -46,8 +54,7 @@ class PromotionController {
         $result['title']='Shop';
         $result['action'] = '/promotion/add';
         $result['submit'] = 'add';
-        $cat = new Category();
-        $categories = $cat->getCategories();
+        $categories = $this->category->getCategories();
         $result['categories'][] = array('text' => 'No category', 'options' => array('value'=>0));
         foreach($categories as $c) {
             $currentCategory = array();
@@ -55,8 +62,7 @@ class PromotionController {
             $currentCategory['options'] = array('value' => $c['id']);
             $result['categories'][] = $currentCategory;
         }
-        $prod = new Product();
-        $products = $prod->getProducts();
+        $products = $this->product->getProducts();
         $result['products'][] = array('text' => 'No product', 'options' => array('value'=>0));
         foreach($products as $c) {
             $currentProduct = array();
@@ -85,8 +91,7 @@ class PromotionController {
             Session::setError($validator->getErrors()[0]);
             Redirect::back();
         }
-        $prom = new Promotion();
-        if ($prom->add($promotion->discount,
+        if ($this->promotion->add($promotion->discount,
                 $promotion->date,
                 $promotion->category_id == 0 ? null : $promotion->category_id,
                 $promotion->product_id == 0 ? null : $promotion->product_id) !== 1) {

@@ -4,19 +4,19 @@ namespace FW;
 
 class View {
 
-    private static $___viewPath = null;
-    private static $___viewDir = null;
-    private static $___data = array();
-    private static $___extension = '.php';
-    private static $___layoutParts = array();
-    private static $___layoutData = array();
-    private static $___layout = null;
+    private static $viewPath = null;
+    private static $viewDir = null;
+    private static $data = array();
+    private static $extension = '.php';
+    private static $layoutParts = array();
+    private static $layoutData = array();
+    private static $layout = null;
     private static $type = null;
     private  static function initViewPath() {
         
-        self::$___viewPath = App::getInstance()->getConfig()->app['viewsDirectory'];
-        if (self::$___viewPath == null) {
-            self::$___viewPath = realpath('../views/');
+        self::$viewPath = App::getInstance()->getConfig()->app['viewsDirectory'];
+        if (self::$viewPath == null) {
+            self::$viewPath = realpath('../views/');
         }
     }
     
@@ -25,7 +25,7 @@ class View {
         if ($path) {
             $path = realpath($path) . DIRECTORY_SEPARATOR;
             if (is_dir($path) && is_readable($path)) {
-                self::$___viewDir = $path;
+                self::$viewDir = $path;
             } else {
                 //todo
                 throw new \Exception('view path',500);
@@ -59,20 +59,20 @@ class View {
 //    }
 
     public static function make($layout, $data = array()) {
-        self::$___layout = $layout;
+        self::$layout = $layout;
         if (is_array($data)) {
-            self::$___data = array_merge(self::$___data, $data);
+            self::$data = array_merge(self::$data, $data);
         }
 
         return new static;
     }
 
     public static function getLayoutData($name){
-        return self::$___layoutData[$name];
+        return self::$layoutData[$name];
     }
 
     public static function with($key, $data) {
-        self::$___data[$key] = $data;
+        self::$data[$key] = $data;
 
         return new static;
     }
@@ -80,26 +80,31 @@ class View {
     public static function render() {
         self::initViewPath();
         if (self::$type !== null) {
-            if (isset(self::$___data[0])) {
-                if (get_class(self::$___data[0]) != self::$type) {
-                    throw new \Exception('', 500);
-                }
+            if (count(self::$data) != 1) {
+                throw new \Exception('you have passed multiple objects to strong type view', 500);
+            }
+            reset(self::$data);
+            $first_key = key(self::$data);
+            if (get_class(self::$data[$first_key]) != self::$type) {
+                throw new \Exception('Wrong object type', 500);
             }
         }
 
-        if (count(self::$___layoutParts) > 0) {
-            foreach (self::$___layoutParts as $k => $v) {
+        if (count(self::$layoutParts) > 0) {
+            foreach (self::$layoutParts as $k => $v) {
                 $r = self::_includeFile($v);
                 if ($r) {
-                    self::$___layoutData[$k] = $r;
+                    self::$layoutData[$k] = $r;
                 }
             }
         }
-        if (self::$___layout !== null) {
-            echo self::_includeFile(self::$___layout);
+        if (self::$layout !== null) {
+            echo self::_includeFile(self::$layout);
         } else {
             throw new \Exception('The layout is missing', 500);
         }
+         //$rc = new \ReflectionClass( self::$___viewDir . str_replace('.', DIRECTORY_SEPARATOR, self::$___layout) . self::$___extension);
+        //var_dump($rc->getDocComment());
     }
 
     public static function useType($class) {
@@ -118,7 +123,7 @@ class View {
 
     public static function appendTemplateToLayout($key, $template) {
         if ($key && $template) {
-            self::$___layoutParts[$key] = $template;
+            self::$layoutParts[$key] = $template;
         } else {
             throw new \Exception('Layout required valid key and template', 500);
         }
@@ -127,13 +132,13 @@ class View {
     }
 
     private static function _includeFile($___file) {
-        if (self::$___viewDir == null) {
-            self::setViewDirectory(self::$___viewPath);
+        if (self::$viewDir == null) {
+            self::setViewDirectory(self::$viewPath);
         }       
-        $___fl = self::$___viewDir . str_replace('.', DIRECTORY_SEPARATOR, $___file) . self::$___extension;
+        $___fl = self::$viewDir . str_replace('.', DIRECTORY_SEPARATOR, $___file) . self::$extension;
         if (file_exists($___fl) && is_readable($___fl)) {
             ob_start();
-            extract(self::$___data);
+            extract(self::$data);
             include $___fl;            
             return ob_get_clean();
         } else {

@@ -16,7 +16,7 @@ return array(
     'namespaces' => array(
 
         'Controllers' => dirname(__DIR__) . '\controllers',
-        'Models' => dirname(__DIR__) . '\models'
+        'Models' => dirname(__DIR__) . '\models',
     ),
 
     'session' => array(
@@ -25,7 +25,7 @@ return array(
 
         'type' => 'native',
 
-        'name' => '__sess',
+        'name' => '_sess',
 
         'lifetime' => 3600,
 
