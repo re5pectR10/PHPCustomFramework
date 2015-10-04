@@ -11,12 +11,11 @@ return array(
 
     'global_input_escaping' => true,
 
-    'controllers_namespace' => 'Controllers',
-
     'namespaces' => array(
 
         'Controllers' => dirname(__DIR__) . '\controllers',
         'Models' => dirname(__DIR__) . '\models',
+        'Asd' => dirname(__DIR__) . '\asd'
     ),
 
     'session' => array(
@@ -55,5 +54,6 @@ return array(
         'id' => 'id',
         'username' => 'username',
         'password' => 'password'
-    )
+    ),
+    'controllers_namespace' => 'Controllers'
 );

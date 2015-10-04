@@ -94,15 +94,15 @@ class Session{
         return isset($_SESSION[$key]);
     }
 
-    public static  function destroySession() {
+    public static function destroySession() {
         session_destroy();
     }
 
-    public static  function getSessionId() {
+    public static function getSessionId() {
         return session_id();
     }
 
-    public static  function saveSession() {
+    public static function saveSession() {
         session_write_close();
     }
 }

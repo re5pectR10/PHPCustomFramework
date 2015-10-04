@@ -2,51 +2,36 @@
 
 namespace FW;
 
-use Controllers\test;
-
 class FrontController {
 
-    private static $_instance = null;
-    private $ns = null;   
-    private $controller = null;
-    private $method = null;
-     /**
-     *
-     * @var \FW\Routers\iRouter;
-     */
-    private $router=null;
-    private function __construct() {
-        
-    }
-    
-    public function getRouter() {
-        return $this->router;
-    }
+    private static $instance = null;
+    private $uri = null;
 
-    public function setRouter(Routers\IRouter $router) {
-        $this->router = $router;
+    public function setURI($uri) {
+        $this->uri = $uri;
     }
 
     public function dispatch(){
-        $_uri = $this->router->getURI();
-        $uriParams = array_filter(explode('/', $_uri), 'strlen');
+        if ($this->uri === null) {
+            throw new \Exception('uri is null');
+        }
+        $uriParams = array_filter(explode('/', $this->uri), 'strlen');
         $controllerName = '';
-        $controllerMethod = '';//var_dump($_uri);
-        $paramsFromGET = array();//var_dump(Route::getRouters());
+        $controllerMethod = '';
+        $paramsFromGET = array();
         foreach(Route::getRouters() as $route){
             $paramsFromGET = array();
             if($route['method'] != $_SERVER['REQUEST_METHOD'] ){
                 continue;
             }
 
-            $filter = explode('|', $route['details']['before']);
-            if (in_array('auth', $filter)) {
+            if (in_array('auth', explode('|', $route['details']['before']))) {
                 if (!Auth::isAuth()) {
                     continue;
                 }
             }
-            $roles = array_filter(explode('|', $route['details']['roles']), 'strlen');
-            if (!Auth::isUserInRole($roles)) {
+
+            if (!Auth::isUserInRole(array_filter(explode('|', $route['details']['roles']), 'strlen'))) {
                 continue;
             }
 
@@ -64,14 +49,8 @@ class FrontController {
                     if(!$this->isParameterValid($uriParams[$i], $routeParams[$i])) {
                         continue 2;
                     }
-                    $paramName = explode(':', $routeParams[$i])[0];
-                    $paramName = substr($paramName, 1);
-                    if(Common::endsWith($paramName, '?}')) {
-                        $paramName = substr($paramName, 0, strlen($paramName) - 2);
-                    } else if(Common::endsWith($paramName, '}')){
-                        $paramName = substr($paramName, 0, strlen($paramName) - 1);
-                    }
 
+                    $paramName = $this->getParameterName($routeParams[$i]);
                     $paramsFromGET[$paramName] = $uriParams[$i];
                 }
 
@@ -105,10 +84,17 @@ class FrontController {
             }
         }
 
+        $requestInput = $this->bindDataToControllerMethod($paramsFromGET, $controllerName, $controllerMethod);
+        $controller = new $controllerName();
+        $controller = DependencyProvider::injectDependenciesToController($controller);
+        call_user_func_array(array($controller, $controllerMethod), $requestInput);
+        Session::setOldInput(InputData::getInstance()->getPost());
+    }
+
+    public function bindDataToControllerMethod($paramsFromGET, $controllerName, $controllerMethod) {
         $input =  InputData::getInstance();
         $input->setGet($paramsFromGET);
         $input->setPost($_POST);
-//var_dump(Route::getRouters());
         $class = new \ReflectionClass($controllerName);
         $method=$class->getMethod($controllerMethod);
         $methodRequiredParams = $method->getNumberOfRequiredParameters();
@@ -137,25 +123,23 @@ class FrontController {
                 $requestInput[$par->name] = $input->getPost()[$par->name];
             }
         }
-        //if ($methodRequiredparams != count($paramsFromGET) + )
-        //var_dump($method->getParameters()[0]);
-        //var_dump(extract($requestInput));
-
-//$help=new HelpPage(Route::getRouters());
-//        $h = $help->getData();
-//        foreach($h as $m) {
-//            echo '<h1>'.$m['url'].'</h1>';
-//            echo '<h3>'.$m['method'].'</h3>';
-//            echo '<pre>'.$m['params'].'</pre>';
-//        }
-
         if($methodRequiredParams > count($requestInput)) {
             throw new \Exception('parameters in the request not equal to parameters declared in method', 500);
         }
-        $controller = new $controllerName();
-        $controller = DependencyProvider::injectDependenciesToController($controller);
-        call_user_func_array(array($controller, $controllerMethod), $requestInput);
-        Session::setOldInput(InputData::getInstance()->getPost());
+
+        return $requestInput;
+    }
+
+    public function getParameterName($param) {
+        $paramName = explode(':', $param)[0];
+        $paramName = substr($paramName, 1);
+        if(Common::endsWith($paramName, '?}')) {
+            $paramName = substr($paramName, 0, strlen($paramName) - 2);
+        } else if(Common::endsWith($paramName, '}')){
+            $paramName = substr($paramName, 0, strlen($paramName) - 1);
+        }
+
+        return $paramName;
     }
 
     private function isParameterValid($paramFromUrl, $paramFromRoute) {
@@ -195,9 +179,9 @@ class FrontController {
     }
 
     public function getDefaultController() {
-        $controler = App::getInstance()->getConfig()->app['default_controller'];
-        if ($controler) {
-            return strtolower($controler);
+        $controller = App::getInstance()->getConfig()->app['default_controller'];
+        if ($controller) {
+            return strtolower($controller);
         }
         return 'index';
     }
@@ -215,10 +199,10 @@ class FrontController {
      * @return \FW\FrontController
      */
     public static function getInstance() {
-        if (self::$_instance == null) {
-            self::$_instance = new FrontController();
+        if (self::$instance == null) {
+            self::$instance = new FrontController();
         }
-        return self::$_instance;
+        return self::$instance;
     }
 
 }

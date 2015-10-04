@@ -62,7 +62,7 @@ Route::Group('admin', array('roles' => 'admin', 'before' => 'auth'), function() 
 
 Route::GET('comment/delete/{id:int}', array('use' => 'CommentController@delete', 'before' => 'auth'));
 
-//Route::GET('test', array('use'=>'test@EditUser3'));
+Route::GET('test', array('use'=>'testController@EditUser3'));
 ////Route::GET('users/edit/{id?}', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 ////Route::GET('users/edit', array('use'=>'UsersController@EditUser','before'=>'csrf|auth'));
 //Route::GET('users/delete/{sas:int}/{sss}', array('use'=>'UsersController@EditUser2','before'=>'csrf','roles'=>'admin|edit'));

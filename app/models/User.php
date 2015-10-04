@@ -2,9 +2,6 @@
 
 namespace Models;
 
-
-use FW\DB;
-
 class User extends Model {
 
     public function getPromotion($criteria) {

@@ -18,7 +18,6 @@ class Loader {
         self::loadClass($class);
     }
 
-    //TODO central error reporting
     public static function loadClass($class) {
         foreach (self::$namespaces as $k => $v) {
             if (strpos($class, $k) === 0) {
@@ -59,7 +58,6 @@ class Loader {
             throw new \Exception('Invalid namespaces');
         }
     }
-    
     
     public static function getNamespaces() {
         return self::$namespaces;

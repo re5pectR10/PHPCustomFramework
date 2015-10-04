@@ -11,7 +11,7 @@ class View {
     private static $layoutParts = array();
     private static $layoutData = array();
     private static $layout = null;
-    private static $type = null;
+    private static $type = array();
     private  static function initViewPath() {
         
         self::$viewPath = App::getInstance()->getConfig()->app['viewsDirectory'];
@@ -35,28 +35,6 @@ class View {
             throw new \Exception('view path',500);
         }
     }
-    
-//     public function display($name, $data = array(), $returnAsString = false) {
-//
-//        if (is_array($data)) {
-//            $this->___data = array_merge($this->___data, $data);
-//        }
-//
-//        if (count($this->___layoutParts) > 0) {
-//            foreach ($this->___layoutParts as $k => $v) {
-//                $r = $this->_includeFile($v);
-//                if ($r) {
-//                    $this->___layoutData[$k] = $r;
-//                }
-//            }
-//        }
-//
-//        if ($returnAsString) {
-//            return $this->_includeFile($name);
-//        } else {
-//            echo $this->_includeFile($name);
-//        }
-//    }
 
     public static function make($layout, $data = array()) {
         self::$layout = $layout;
@@ -79,14 +57,13 @@ class View {
 
     public static function render() {
         self::initViewPath();
-        if (self::$type !== null) {
-            if (count(self::$data) != 1) {
-                throw new \Exception('you have passed multiple objects to strong type view', 500);
-            }
-            reset(self::$data);
-            $first_key = key(self::$data);
-            if (get_class(self::$data[$first_key]) != self::$type) {
-                throw new \Exception('Wrong object type', 500);
+        if (!empty(self::$type)) {
+            foreach(self::$type as $t) {
+                foreach(self::$data as $d) {
+                    if (get_class($d) != $t) {
+                        throw new \Exception('Wrong object type', 500);
+                    }
+                }
             }
         }
 
@@ -103,16 +80,16 @@ class View {
         } else {
             throw new \Exception('The layout is missing', 500);
         }
-         //$rc = new \ReflectionClass( self::$___viewDir . str_replace('.', DIRECTORY_SEPARATOR, self::$___layout) . self::$___extension);
-        //var_dump($rc->getDocComment());
     }
 
-    public static function useType($class) {
-        if(!class_exists($class)) {
-            throw new \Exception('The class' . $class . 'is not defined', 500);
-        }
+    public static function useType(array $class = array()) {
+        foreach($class as $c) {
+            if(!class_exists($c)) {
+                throw new \Exception('The class' . $class . 'is not defined', 500);
+            }
 
-        self::$type = $class;
+            self::$type[] = $c;
+        }
         return new static;
     }
 
@@ -145,14 +122,6 @@ class View {
             throw new \Exception('View ' . $___file . ' cannot be included', 500);
         }        
     }
-    
-//    public static function __set($name, $value) {
-//        self::$___data[$name] = $value;
-//    }
-//
-//    public static function __get($name) {
-//        return self::$___data[$name];
-//    }
 }
 
 

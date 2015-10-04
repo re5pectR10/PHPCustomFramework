@@ -94,6 +94,27 @@ class Form {
         ));
     }
 
+    public static function ajaxScript($button, $url, $method, $loadOn, $params = array())
+    {
+        $ajax = '<script>';
+        $ajax .= '$("' . $button . '").click(function (e) {' . 'e.preventDefault();';
+        $ajax .= '$.ajax({';
+        $ajax .= 'url: "' . $url . '",';
+        $ajax .= 'method: "' . $method . '",';
+        $ajax .= 'data: {';
+
+        foreach ($params as $key => $value) {
+            $ajax .= $key . ': $("' . $value . '").val(),';
+        }
+
+        $ajax .= '}';
+        $ajax .= '}).done(function (data) {';
+        $ajax .= '$("' . $loadOn . '").text(data);';
+        $ajax .= '})});</script>';
+
+        return $ajax;
+    }
+
     private static function getElementWithClosingTad($tag, $text = '', array $options = array()) {
         return '<' . $tag . self::getAttributesAsString($options) . '>' . $text . '</' . $tag . '>';
     }

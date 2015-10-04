@@ -16,7 +16,7 @@
                 <?php endif; ?>
                 <div class="col-md-12">
                     <div class="thumbnail">
-                        <img src="http://placehold.it/320x150" alt="">
+                        <img src="https://hivemc.com/media/images/game_sg_placeholder.jpg" alt="">
                         <div class="caption">
                             <?php if(\FW\Auth::isAuth()) : ?>
                             <a class="pull-right btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/add/<?= $product['id'] ?>">Add to Cart</a>
