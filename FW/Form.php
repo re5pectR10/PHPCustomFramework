@@ -44,6 +44,26 @@ class Form {
         return self::getInputFormElement('file', $options);
     }
 
+    public static function color(array $options = array()) {
+        return self::getInputFormElement('color', $options);
+    }
+
+    public static function email(array $options = array()) {
+        return self::getInputFormElement('email', $options);
+    }
+
+    public static function number(array $options = array()) {
+        return self::getInputFormElement('number', $options);
+    }
+
+    public static function range(array $options = array()) {
+        return self::getInputFormElement('range', $options);
+    }
+
+    public static function reset(array $options = array()) {
+        return self::getInputFormElement('reset', $options);
+    }
+
     public static function submit(array $options = array()) {
         return self::getInputFormElement('submit', $options);
     }

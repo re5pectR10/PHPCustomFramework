@@ -25,6 +25,12 @@ class FrontController {
                 continue;
             }
 
+            if (in_array('csrf', explode('|', $route['details']['before']))) {
+                if (!CSRF::validateToken()) {
+                    continue;
+                }
+            }
+
             if (in_array('auth', explode('|', $route['details']['before']))) {
                 if (!Auth::isAuth()) {
                     continue;
@@ -92,7 +98,7 @@ class FrontController {
     }
 
     public function bindDataToControllerMethod($paramsFromGET, $controllerName, $controllerMethod) {
-        $input =  InputData::getInstance();
+        $input = InputData::getInstance();
         $input->setGet($paramsFromGET);
         $input->setPost($_POST);
         $class = new \ReflectionClass($controllerName);
