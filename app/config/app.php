@@ -11,6 +11,11 @@ return array(
 
     'global_input_escaping' => true,
 
+    'escape_input_without' => array(
+        '_token',
+        'password'
+    ),
+
     'namespaces' => array(
 
         'Controllers' => dirname(__DIR__) . '\controllers',

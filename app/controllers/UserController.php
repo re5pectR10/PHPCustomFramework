@@ -2,6 +2,7 @@
 
 namespace Controllers;
 use FW\Auth;
+use FW\InputData;
 use FW\Redirect;
 use FW\Session;
 use FW\Validation;

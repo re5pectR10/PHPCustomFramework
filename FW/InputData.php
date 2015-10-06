@@ -9,11 +9,16 @@ class InputData {
     private $_post = array();
     private $_cookies = array();
     private $isGlobalEscapingEnable = true;
+    private $except = array();
 
     private function __construct() {
         $this->_cookies = $_COOKIE;
         if(isset(App::getInstance()->getConfig()->app['global_input_escaping'])) {
             $this->isGlobalEscapingEnable = App::getInstance()->getConfig()->app['global_input_escaping'];
+        }
+
+        if (isset(App::getInstance()->getConfig()->app['escape_input_without']) && is_array(App::getInstance()->getConfig()->app['escape_input_without'])) {
+            $this->except = App::getInstance()->getConfig()->app['escape_input_without'];
         }
     }
 
@@ -21,7 +26,7 @@ class InputData {
         if (is_array($ar)) {
             if ($this->isGlobalEscapingEnable) {
                 foreach($ar as $key=>$value) {
-                    if ($key == '_token' || $key == 'password') {
+                    if (in_array($key, $this->except)) {
                         $this->_post[$key] = $value;
                     } else {
                         $this->_post[$key] = Common::xss_clean($value);
