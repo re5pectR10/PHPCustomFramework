@@ -9,7 +9,6 @@ class App {
     private static $instance = null;
     private $config = null;
     private $router = null;
-    private $dbConnections = array();
 
     /**
      *
@@ -25,13 +24,18 @@ class App {
         if ($this->config->getConfigFolder() == null) {
             $this->setConfigFolder('../config');
         }
-
-        include_once '../routes.php';
-        include_once '../dependencies.php';
     }
 
     public function setConfigFolder($path) {
         $this->config->setConfigFolder($path);
+    }
+
+    private function setRoutes() {
+        include_once '../routes.php';
+    }
+
+    private function setDependancies() {
+        include_once '../dependencies.php';
     }
 
     public function getConfigFolder() {
@@ -58,6 +62,8 @@ class App {
         if ($this->config->getConfigFolder() == null) {
             $this->setConfigFolder('../app/config');
         }
+        $this->setRoutes();
+        $this->setDependancies();
         $this->frontController = FrontController::getInstance();
         $this->frontController->setURI(substr($_SERVER["PATH_INFO"], 1));
         //$this->frontController->setURI(substr($_SERVER["PHP_SELF"], strlen($_SERVER['SCRIPT_NAME']) + 1));
@@ -68,20 +74,6 @@ class App {
         }
 
         $this->frontController->dispatch();
-    }
-
-    public function getDBConnection($connection = 'default') {
-        if ($this->dbConnections[$connection]) {
-            return $this->dbConnections[$connection];
-        }
-        $dbConfig = $this->getConfig()->database;
-        if (!$dbConfig[$connection]) {
-            throw new \Exception('No valid connection identificator is provided', 500);
-        }
-        $dbh = new \PDO($dbConfig[$connection]['connection_uri'], $dbConfig[$connection]['username'],
-                        $dbConfig[$connection]['password'], $dbConfig[$connection]['pdo_options']);
-        $this->dbConnections[$connection] = $dbh;
-        return $dbh;
     }
 
     /**

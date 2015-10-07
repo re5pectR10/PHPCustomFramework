@@ -18,10 +18,10 @@ class DB {
         if ($connection instanceof \PDO) {
             $this->db = $connection;
         } else if ($connection != null) {
-            $this->db = App::getInstance()->getDBConnection($connection);
+            $this->db = DbConnection::getInstance()->getDBConnection($connection);
             $this->connection = $connection;
         } else {
-            $this->db = App::getInstance()->getDBConnection($this->connection);
+            $this->db = DbConnection::getInstance()->getDBConnection($this->connection);
         }
     }
 

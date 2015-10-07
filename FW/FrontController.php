@@ -25,11 +25,7 @@ class FrontController {
                 continue;
             }
 
-            if (in_array('csrf', explode('|', $route['details']['before']))) {
-                if (!CSRF::validateToken()) {
-                    continue;
-                }
-            }
+
 
             if (in_array('auth', explode('|', $route['details']['before']))) {
                 if (!Auth::isAuth()) {
@@ -69,6 +65,11 @@ class FrontController {
             }
 
             $paramsFromGET = array();
+            if (in_array('csrf', explode('|', $route['details']['before']))) {
+                if (!CSRF::validateToken()) {
+                    continue;
+                }
+            }
         }
         if($controllerMethod === '') {
             if(App::getInstance()->getConfig()->app['enable_default_routing']) {

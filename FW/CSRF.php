@@ -7,6 +7,7 @@ class CSRF {
 
     public static function generateToken() {
         $token = md5(uniqid(rand(), true));
+        //Session::set('_token', $token);
         $_SESSION['_token'] = $token;
         return $token;
     }
