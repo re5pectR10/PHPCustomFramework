@@ -1,7 +1,8 @@
 <?php
 
-namespace FW;
+namespace FW\Helpers;
 use Controllers;
+use FW\App;
 
 class HelpPage {
 

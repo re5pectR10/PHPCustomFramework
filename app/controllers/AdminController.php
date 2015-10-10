@@ -3,10 +3,10 @@
 namespace Controllers;
 
 
-use FW\Auth;
-use FW\Redirect;
-use FW\Session;
-use FW\View;
+use FW\Security\Auth;
+use FW\Helpers\Redirect;
+use FW\Session\Session;
+use FW\View\View;
 
 class AdminController {
 

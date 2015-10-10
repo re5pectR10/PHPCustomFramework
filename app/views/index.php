@@ -1,20 +1,25 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
 
         <div class="row">
 
-            <?= \FW\View::getLayoutData('catMenu') ?>
+            <?= View::getLayoutData('catMenu') ?>
             <?php if($isEditor): ?>
-                <a href="<?= \FW\Common::getBaseURL() ?>/product/add" class="btn btn-success">Add Product</a>
+                <a href="<?= Common::getBaseURL() ?>/product/add" class="btn btn-success">Add Product</a>
             <?php endif ?>
             <div class="col-md-9">
-                <?php if(\FW\Session::hasMessage()): ?>
-                    <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
+                <?php if(Session::hasMessage()): ?>
+                    <div class="alert alert-success" role="alert"><?= Session::getMessage() ?></div>
                 <?php endif; ?>
-                <?php if(\FW\Session::hasError()): ?>
-                    <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+                <?php if(Session::hasError()): ?>
+                    <div class="alert alert-danger" role="alert"><?= Session::getError() ?></div>
                 <?php endif; ?>
 
                 <div class="row carousel-holder">
@@ -61,7 +66,7 @@
                                     <h2 class="pull-right"><?= $p['promotion_price'] ?></h2>
                                 <?php endif; ?>
                                 <h4 class="<?= isset($p['promotion_price']) ? 'strike' : '' ?> pull-right"><?= $p['price'] ?></h4>
-                                <h4><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $p['id'] ?>"><?= $p['name'] ?></a>
+                                <h4><a href="<?= Common::getBaseURL() ?>/product/<?= $p['id'] ?>"><?= $p['name'] ?></a>
                                 </h4>
                                 <div>
 
@@ -108,4 +113,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

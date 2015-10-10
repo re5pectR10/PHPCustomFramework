@@ -1,12 +1,12 @@
 <?php
 
 namespace Controllers;
-use FW\Auth;
-use FW\InputData;
-use FW\Redirect;
-use FW\Session;
-use FW\Validation;
-use FW\View;
+use FW\Security\Auth;
+use FW\Input\InputData;
+use FW\Helpers\Redirect;
+use FW\Session\Session;
+use FW\Security\Validation;
+use FW\View\View;
 use Models\UserModel;
 
 class UserController{

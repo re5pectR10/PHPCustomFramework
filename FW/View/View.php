@@ -1,6 +1,8 @@
 <?php
 
-namespace FW;
+namespace FW\View;
+
+use FW\App;
 
 class View {
 

@@ -1,35 +1,42 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+use \FW\HTML\Form;
+use \FW\Security\Auth;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
 
         <div class="row">
 
-            <?= \FW\View::getLayoutData('catMenu') ?>
+            <?= View::getLayoutData('catMenu') ?>
 
             <div class="col-md-9">
-                <?php if(\FW\Session::hasMessage()): ?>
-                    <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
+                <?php if(Session::hasMessage()): ?>
+                    <div class="alert alert-success" role="alert"><?= Session::getMessage() ?></div>
                 <?php endif; ?>
-                <?php if(\FW\Session::hasError()): ?>
-                    <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+                <?php if(Session::hasError()): ?>
+                    <div class="alert alert-danger" role="alert"><?= Session::getError() ?></div>
                 <?php endif; ?>
                 <div class="col-md-12">
                     <div class="thumbnail">
                         <img src="https://hivemc.com/media/images/game_sg_placeholder.jpg" alt="">
                         <div class="caption">
-                            <?php if(\FW\Auth::isAuth()) : ?>
-                            <a class="pull-right btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/add/<?= $product['id'] ?>">Add to Cart</a>
+                            <?php if(Auth::isAuth()) : ?>
+                            <a class="pull-right btn btn-success" href="<?= Common::getBaseURL() ?>/user/cart/add/<?= $product['id'] ?>">Add to Cart</a>
                             <?php endif; ?>
                             <?php if (isset($product['promotion_price'])) : ?>
                                 <h2 class="pull-right"><?= $product['promotion_price'] ?></h2>
                             <?php endif; ?>
                             <h4 class="<?= isset($product['promotion_price']) ? 'strike' : '' ?> pull-right"><?= $product['price'] ?></h4>
-                            <h4><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $product['id'] ?>"><?= $product['name'] ?></a>
+                            <h4><a href="<?= Common::getBaseURL() ?>/product/<?= $product['id'] ?>"><?= $product['name'] ?></a>
                             </h4>
                             <?php if($isEditor): ?>
-                                <a href="<?= \FW\Common::getBaseURL() ?>/product/edit/<?= $product['id'] ?>" class="btn btn-primary">Edit</a>
-                                <a href="<?= \FW\Common::getBaseURL() ?>/product/delete/<?= $product['id'] ?>" class="btn btn-danger">Delete</a>
+                                <a href="<?= Common::getBaseURL() ?>/product/edit/<?= $product['id'] ?>" class="btn btn-primary">Edit</a>
+                                <a href="<?= Common::getBaseURL() ?>/product/delete/<?= $product['id'] ?>" class="btn btn-danger">Delete</a>
                             <?php endif ?>
                             <p class="product-description"><?= $product['description'] ?></p>
                             <div class="ratings">
@@ -43,26 +50,26 @@
                     ?>
                         <div class="thumbnail">
                             <div class="caption">
-                                <h4><a href="<?= \FW\Common::getBaseURL() ?>/user/<?= $c['user_id'] ?>"><?= $c['username'] ?></a></h4>
+                                <h4><a href="<?= Common::getBaseURL() ?>/user/<?= $c['user_id'] ?>"><?= $c['username'] ?></a></h4>
                                 <h4><?= $c['posted_on'] ?></h4>
                                 <div>
                                     <p><?= $c['content'] ?></p>
                                 </div>
                             </div>
-                            <?php if(\FW\Auth::getUserId() == $c['user_id'] || $isAdmin): ?>
-                                <a href="<?= \FW\Common::getBaseURL() ?>/comment/delete/<?= $c['id'] ?>" class="btn btn-danger">Delete</a>
+                            <?php if(Auth::getUserId() == $c['user_id'] || $isAdmin): ?>
+                                <a href="<?= Common::getBaseURL() ?>/comment/delete/<?= $c['id'] ?>" class="btn btn-danger">Delete</a>
                             <?php endif ?>
                         </div>
                     <?php
                     endforeach;
                     ?>
-                    <?php if (\FW\Auth::isAuth()) : ?>
+                    <?php if (Auth::isAuth()) : ?>
                         <div class="thumbnail">
                             <div class="caption">
-                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL().'/product/' .$product['id'] . '/add/comment')) ?>
-                                <?= \FW\Form::textarea('', array('name' => 'content', 'placeholder' => 'Write here', 'rows' => '4', 'cols' => '100')) ?>
-                                <?= \FW\Form::submit(array('name' => 'submit', 'value' => 'Send', 'class' => 'btn btn-success')) ?>
-                                <?= \FW\Form::close() ?>
+                                <?= Form::open(array('action' => Common::getBaseURL().'/product/' .$product['id'] . '/add/comment')) ?>
+                                <?= Form::textarea('', array('name' => 'content', 'placeholder' => 'Write here', 'rows' => '4', 'cols' => '100')) ?>
+                                <?= Form::submit(array('name' => 'submit', 'value' => 'Send', 'class' => 'btn btn-success')) ?>
+                                <?= Form::close() ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -96,4 +103,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

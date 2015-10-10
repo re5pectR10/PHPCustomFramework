@@ -1,21 +1,41 @@
 <?php
 
-namespace FW;
+namespace FW\Dispatch;
 
-class FrontController {
+use FW\App;
+use FW\Helpers\Common;
+use FW\Helpers\DependencyProvider;
+use FW\Input\InputData;
+use FW\Route\IRequestProvider;
+use FW\Route\RequestProvider;
+use FW\Route\Route;
+use FW\Security\Auth;
+use FW\Security\CSRF;
+use FW\Session\Session;
+
+class FrontController implements IDispatcher {
 
     private static $instance = null;
-    private $uri = null;
+    /**
+     * @var \FW\Route\IRequestProvider
+     */
+    private $request = null;
 
-    public function setURI($uri) {
-        $this->uri = $uri;
+    public function __construct(IRequestProvider $request = null) {
+        if ($request !== null) {
+            $this->request = $request;
+        } else {
+            $this->request = new RequestProvider();
+        }
+    }
+
+    public function setRequestProvider(IRequestProvider $request) {
+        $this->request = $request;
     }
 
     public function dispatch(){
-        if ($this->uri === null) {
-            throw new \Exception('uri is null');
-        }
-        $uriParams = array_filter(explode('/', $this->uri), 'strlen');
+        $uri = $this->request->getURI();
+        $uriParams = array_filter(explode('/', $uri), 'strlen');
         $controllerName = '';
         $controllerMethod = '';
         $paramsFromGET = array();
@@ -24,8 +44,6 @@ class FrontController {
             if($route['method'] != $_SERVER['REQUEST_METHOD'] ){
                 continue;
             }
-
-
 
             if (in_array('auth', explode('|', $route['details']['before']))) {
                 if (!Auth::isAuth()) {
@@ -101,7 +119,7 @@ class FrontController {
     public function bindDataToControllerMethod($paramsFromGET, $controllerName, $controllerMethod) {
         $input = InputData::getInstance();
         $input->setGet($paramsFromGET);
-        $input->setPost($_POST);
+        $input->setPost($this->request->getPOST());
         $class = new \ReflectionClass($controllerName);
         $method=$class->getMethod($controllerMethod);
         $methodRequiredParams = $method->getNumberOfRequiredParameters();
@@ -203,7 +221,7 @@ class FrontController {
 
     /**
      * 
-     * @return \FW\FrontController
+     * @return \FW\Dispatch\FrontController
      */
     public static function getInstance() {
         if (self::$instance == null) {

@@ -2,9 +2,10 @@
 
 namespace Controllers;
 
-use FW\HelpPage;
-use FW\Route;
-use FW\View;
+use FW\Helpers\HelpPage;
+use FW\Route\Route;
+use FW\View\View;
+
 
 class HelpPageController {
 

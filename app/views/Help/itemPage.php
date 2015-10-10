@@ -1,9 +1,12 @@
+<?php
+use \FW\HTML\Form;
+?>
 <html>
 <head>
     <title><?= $title ?></title>
-    <?= \FW\Form::script('https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js') ?>
-    <?= \FW\Form::script('js/bootstrap.min.js') ?>
-    <?= \FW\Form::style('css/bootstrap.min.css') ?>
+    <?= Form::script('https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js') ?>
+    <?= Form::script('js/bootstrap.min.js') ?>
+    <?= Form::style('css/bootstrap.min.css') ?>
 </head>
 <body>
 <h1 class="page-header"><?= $title ?></h1>

@@ -1,3 +1,8 @@
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\HTML\Form;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,16 +13,16 @@
     <meta name="author" content="">
 
     <title><?= $title ?></title>
-    <?= \FW\Form::script('https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js') ?>
-    <?= \FW\Form::script('js/bootstrap.min.js') ?>
-    <?= \FW\Form::script('js/main.js') ?>
-    <?= \FW\Form::style('css/bootstrap.min.css') ?>
-    <?= \FW\Form::style('css/shop-homepage.css') ?>
+    <?= Form::script('https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js') ?>
+    <?= Form::script('js/bootstrap.min.js') ?>
+    <?= Form::script('js/main.js') ?>
+    <?= Form::style('css/bootstrap.min.css') ?>
+    <?= Form::style('css/shop-homepage.css') ?>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <?= \FW\Form::script('https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') ?>
-    <?= \FW\Form::script('https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js') ?>
+    <?= Form::script('https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') ?>
+    <?= Form::script('https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js') ?>
     <![endif]-->
 </head>
 <body>
@@ -31,10 +36,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="<?= \FW\Common::getBaseURL() ?>">Shop</a>
+            <a class="navbar-brand" href="<?= Common::getBaseURL() ?>">Shop</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <?= \FW\View::getLayoutData('topBar') ?>
+        <?= View::getLayoutData('topBar') ?>
         <!-- /.navbar-collapse -->
     </div>
     <!-- /.container -->

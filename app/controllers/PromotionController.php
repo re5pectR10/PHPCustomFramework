@@ -3,11 +3,11 @@
 namespace Controllers;
 
 
-use FW\Auth;
-use FW\Redirect;
-use FW\Session;
-use FW\Validation;
-use FW\View;
+use FW\Security\Auth;
+use FW\Helpers\Redirect;
+use FW\Session\Session;
+use FW\Security\Validation;
+use FW\View\View;
 use Models\PromotionModel;
 
 class PromotionController {

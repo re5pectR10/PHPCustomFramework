@@ -3,12 +3,12 @@
 namespace Models;
 
 
-use FW\DB;
+use FW\Database\DB;
 
 class Model {
 
     /**
-     * @var \FW\DB
+     * @var \FW\Database\DB
      */
     protected $db;
 

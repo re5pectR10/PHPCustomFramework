@@ -1,7 +1,11 @@
 <?php
 
-namespace FW;
+namespace FW\Helpers;
 
+
+use FW\Input\InputData;
+use FW\Route\Route;
+use FW\Session\Session;
 
 class Redirect {
 

@@ -1,6 +1,9 @@
 <?php
 
-namespace FW;
+namespace FW\HTML;
+
+use FW\Helpers\Common;
+use FW\Security\CSRF;
 
 class Form {
 

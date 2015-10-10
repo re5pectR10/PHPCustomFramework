@@ -1,4 +1,9 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -6,11 +11,11 @@
         <div class="row">
 
             <div class="col-md-12">
-                <?php if(\FW\Session::hasMessage()): ?>
-                    <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
+                <?php if(Session::hasMessage()): ?>
+                    <div class="alert alert-success" role="alert"><?= Session::getMessage() ?></div>
                 <?php endif; ?>
-                <?php if(\FW\Session::hasError()): ?>
-                    <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+                <?php if(Session::hasError()): ?>
+                    <div class="alert alert-danger" role="alert"><?= Session::getError() ?></div>
                 <?php endif; ?>
                 <h1>Users</h1>
                 <table class="table table-striped">
@@ -31,19 +36,19 @@
                             <td><?= $u['is_banned'] ? 'ban' : $u['role'] ?></td>
                             <td>
                             <?php if($u['role'] == 'admin'): ?>
-                                <a class="btn btn-primary" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/editor">Make Editor</a>
-                                <a class="btn btn-warning" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/user">Make User</a>
+                                <a class="btn btn-primary" href="<?= Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/editor">Make Editor</a>
+                                <a class="btn btn-warning" href="<?= Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/user">Make User</a>
                             <?php elseif($u['role'] == 'editor'): ?>
-                                <a class="btn btn-primary" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/admin">Make Admin</a>
-                                <a class="btn btn-warning" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/user">Make User</a>
+                                <a class="btn btn-primary" href="<?= Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/admin">Make Admin</a>
+                                <a class="btn btn-warning" href="<?= Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/user">Make User</a>
                             <?php else: ?>
-                                <a class="btn btn-primary" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/admin">Make Admin</a>
-                                <a class="btn btn-warning" href="<?= \FW\Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/editor">Make Editor</a>
+                                <a class="btn btn-primary" href="<?= Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/admin">Make Admin</a>
+                                <a class="btn btn-warning" href="<?= Common::getBaseURL() ?>/admin/make/<?= $u['id'] ?>/editor">Make Editor</a>
                             <?php endif; ?>
-                                <a class="btn btn-danger" href="<?= \FW\Common::getBaseURL() ?>/admin/ban/<?= $u['id'] ?>">Ban</a>
+                                <a class="btn btn-danger" href="<?= Common::getBaseURL() ?>/admin/ban/<?= $u['id'] ?>">Ban</a>
                             </td>
                             <td>
-                                <a class="btn btn-default" href="<?= \FW\Common::getBaseURL() ?>/user/<?= $u['id'] ?>/products">User Products</a>
+                                <a class="btn btn-default" href="<?= Common::getBaseURL() ?>/user/<?= $u['id'] ?>/products">User Products</a>
                             </td>
                         </tr>
                     <?php
@@ -79,4 +84,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

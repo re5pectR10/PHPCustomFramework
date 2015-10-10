@@ -3,11 +3,11 @@
 namespace Controllers;
 
 
-use FW\Auth;
-use FW\Redirect;
-use FW\Session;
-use FW\Validation;
-use FW\View;
+use FW\Security\Auth;
+use FW\Helpers\Redirect;
+use FW\Session\Session;
+use FW\Security\Validation;
+use FW\View\View;
 use Models\ProductModel;
 
 class ProductController {
@@ -49,14 +49,14 @@ class ProductController {
 
         View::make('index', $result);
         if (Auth::isAuth()) {
-            View::appendTemplateToLayout('topBar', 'top_bar/user');
+            View::appendTemplateToLayout('topBar', 'top_bar.user');
         } else {
-            View::appendTemplateToLayout('topBar', 'top_bar/guest');
+            View::appendTemplateToLayout('topBar', 'top_bar.guest');
         }
 
-        View::appendTemplateToLayout('header', 'includes/header')
-            ->appendTemplateToLayout('footer', 'includes/footer')
-            ->appendTemplateToLayout('catMenu', 'side_bar/category_menu')
+        View::appendTemplateToLayout('header', 'includes.header')
+            ->appendTemplateToLayout('footer', 'includes.footer')
+            ->appendTemplateToLayout('catMenu', 'side_bar.category_menu')
             ->render();
     }
 
@@ -80,14 +80,14 @@ class ProductController {
 
         View::make('product', $result);
         if (Auth::isAuth()) {
-            View::appendTemplateToLayout('topBar', 'top_bar/user');
+            View::appendTemplateToLayout('topBar', 'top_bar.user');
         } else {
-            View::appendTemplateToLayout('topBar', 'top_bar/guest');
+            View::appendTemplateToLayout('topBar', 'top_bar.guest');
         }
 
-        View::appendTemplateToLayout('header', 'includes/header')
-            ->appendTemplateToLayout('footer', 'includes/footer')
-            ->appendTemplateToLayout('catMenu', 'side_bar/category_menu')
+        View::appendTemplateToLayout('header', 'includes.header')
+            ->appendTemplateToLayout('footer', 'includes.footer')
+            ->appendTemplateToLayout('catMenu', 'side_bar.category_menu')
             ->render();
     }
 

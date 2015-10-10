@@ -1,7 +1,9 @@
 <?php
 
-namespace FW;
+namespace FW\Database;
 
+
+use FW\App;
 
 class DbConnection {
 

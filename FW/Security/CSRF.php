@@ -1,6 +1,6 @@
 <?php
 
-namespace FW;
+namespace FW\Security;
 
 
 class CSRF {

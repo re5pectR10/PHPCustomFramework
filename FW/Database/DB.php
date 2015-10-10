@@ -1,7 +1,7 @@
 <?php
 
 
-namespace FW;
+namespace FW\Database;
 
 class DB {
 

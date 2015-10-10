@@ -1,21 +1,28 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+use \FW\HTML\Form;
+use \FW\Security\Auth;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
-        <?php if(\FW\Session::hasError()): ?>
-            <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+        <?php if(Session::hasError()): ?>
+            <div class="alert alert-danger" role="alert"><?= Session::getError() ?></div>
         <?php endif; ?>
         <div class="row">
 
             <div class="col-md-12">
 
-                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL().$action)) ?>
-                <?= \FW\Form::text(array('name' => 'discount', 'placeholder' => 'discount', 'value' => \FW\Session::oldInput()['discount'])) ?>
-                <?= \FW\Form::datetime(array('name' => 'date', 'placeholder' => 'Exp date. yyyy-dd-mm', 'value' => \FW\Session::oldInput()['date'])) ?>
-                <?= \FW\Form::select(array('name' => 'category_id'),$categories) ?>
-                <?= \FW\Form::select(array('name' => 'product_id'),$products) ?>
-                <?= \FW\Form::submit(array('name' => 'submit', 'value' => $submit)) ?>
-                <?= \FW\Form::close() ?>
+                <?= Form::open(array('action' => Common::getBaseURL().$action)) ?>
+                <?= Form::text(array('name' => 'discount', 'placeholder' => 'discount', 'value' => Session::oldInput()['discount'])) ?>
+                <?= Form::datetime(array('name' => 'date', 'placeholder' => 'Exp date. yyyy-dd-mm', 'value' => Session::oldInput()['date'])) ?>
+                <?= Form::select(array('name' => 'category_id'),$categories) ?>
+                <?= Form::select(array('name' => 'product_id'),$products) ?>
+                <?= Form::submit(array('name' => 'submit', 'value' => $submit)) ?>
+                <?= Form::close() ?>
             </div>
 
         </div>
@@ -44,4 +51,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

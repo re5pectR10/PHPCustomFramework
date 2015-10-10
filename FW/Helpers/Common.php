@@ -1,6 +1,6 @@
 <?php
 
-namespace FW;
+namespace FW\Helpers;
 class Common {
    
     public static function normalize($data,$types){

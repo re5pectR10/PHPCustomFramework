@@ -1,4 +1,9 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -6,14 +11,14 @@
         <div class="row">
 
             <div class="col-md-12">
-                <?php if(\FW\Session::hasMessage()): ?>
-                    <div class="alert alert-success" role="alert"><?= \FW\Session::getMessage() ?></div>
+                <?php if(Session::hasMessage()): ?>
+                    <div class="alert alert-success" role="alert"><?= Session::getMessage() ?></div>
                 <?php endif; ?>
-                <?php if(\FW\Session::hasError()): ?>
-                    <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+                <?php if(Session::hasError()): ?>
+                    <div class="alert alert-danger" role="alert"><?= Session::getError() ?></div>
                 <?php endif; ?>
                 <h1>Promotions</h1>
-                <a class="btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/promotion/add">Add</a>
+                <a class="btn btn-success" href="<?= Common::getBaseURL() ?>/promotion/add">Add</a>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -30,10 +35,10 @@
                         <tr>
                             <td><?= $item['discount'] ?></td>
                             <td><?= $item['exp_date'] ?></td>
-                            <td><?= isset($item['product_id']) ? '<a href="'.\FW\Common::getBaseURL() .'/product/'.$item['product_id'].'">'. $item['product'] .'</a>' :
+                            <td><?= isset($item['product_id']) ? '<a href="'.Common::getBaseURL() .'/product/'.$item['product_id'].'">'. $item['product'] .'</a>' :
                                     (isset($item['category_id']) ? $item['category'] : 'All') ?></td>
                             <td>
-                                <a class="btn btn-danger" href="<?= \FW\Common::getBaseURL() ?>/promotion/delete/<?= $item['id'] ?>">Remove</a>
+                                <a class="btn btn-danger" href="<?= Common::getBaseURL() ?>/promotion/delete/<?= $item['id'] ?>">Remove</a>
                             </td>
                         </tr>
                     <?php
@@ -69,4 +74,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

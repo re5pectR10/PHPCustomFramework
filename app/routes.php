@@ -1,5 +1,5 @@
 <?php
-use \FW\Route;
+use \FW\Route\Route;
 
 Route::Group('helppage', array(), function() {
     Route::GET('', array('use'=>'HelpPageController@index','name'=>'sds'));

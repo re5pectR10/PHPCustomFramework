@@ -1,6 +1,9 @@
 <?php
 
-namespace FW;
+namespace FW\Input;
+
+use FW\App;
+use FW\Helpers\Common;
 
 class InputData {
 
@@ -102,7 +105,7 @@ class InputData {
 
     /**
      * 
-     * @return \FW\InputData
+     * @return \FW\Input\InputData
      */
     public static function getInstance() {
         if (self::$_instance == null) {

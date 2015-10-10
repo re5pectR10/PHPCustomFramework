@@ -1,6 +1,12 @@
 <?php
 namespace FW;
 
+use FW\Dispatch\FrontController;
+use FW\Helpers\Common;
+use FW\Helpers\Config;
+use FW\Session\Session;
+use FW\View\View;
+
 include_once 'Loader.php';
 
 
@@ -12,7 +18,7 @@ class App {
 
     /**
      *
-     * @var \FW\FrontController
+     * @var \FW\Dispatch\FrontController
      */
     private $frontController = null;
 
@@ -52,7 +58,7 @@ class App {
 
     /**
      * 
-     * @return \FW\Config
+     * @return \FW\Helpers\Config
      */
     public function getConfig() {
         return $this->config;
@@ -65,7 +71,6 @@ class App {
         $this->setRoutes();
         $this->setDependancies();
         $this->frontController = FrontController::getInstance();
-        $this->frontController->setURI(substr($_SERVER["PATH_INFO"], 1));
         //$this->frontController->setURI(substr($_SERVER["PHP_SELF"], strlen($_SERVER['SCRIPT_NAME']) + 1));
 
         $_sess = $this->config->app['session'];

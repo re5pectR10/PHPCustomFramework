@@ -1,6 +1,8 @@
 <?php
 
-namespace FW;
+namespace FW\Helpers;
+
+use FW\Loader;
 
 class Config {
 
@@ -60,7 +62,7 @@ class Config {
     
     /**
      * 
-     * @return \FW\Config
+     * @return \FW\Helpers\Config
      */
     public static function getInstance() {
         if (self::$_instance == NULL) {

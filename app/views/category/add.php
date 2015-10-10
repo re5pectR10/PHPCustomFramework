@@ -1,18 +1,24 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+use \FW\HTML\Form;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
-        <?php if(\FW\Session::hasError()): ?>
-            <div class="alert alert-danger" role="alert"><?= \FW\Session::getError() ?></div>
+        <?php if(Session::hasError()): ?>
+            <div class="alert alert-danger" role="alert"><?= Session::getError() ?></div>
         <?php endif; ?>
         <div class="row">
 
             <div class="col-md-12">
 
-                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL().$action)) ?>
-                <?= \FW\Form::text(array('name' => 'name', 'placeholder' => 'Name', 'value' => isset($category) ? $category['name'] : '')) ?>
-                <?= \FW\Form::submit(array('name' => 'submit', 'value' => $submit)) ?>
-                <?= \FW\Form::close() ?>
+                <?= Form::open(array('action' => Common::getBaseURL().$action)) ?>
+                <?= Form::text(array('name' => 'name', 'placeholder' => 'Name', 'value' => isset($category) ? $category['name'] : '')) ?>
+                <?= Form::submit(array('name' => 'submit', 'value' => $submit)) ?>
+                <?= Form::close() ?>
             </div>
 
         </div>
@@ -41,4 +47,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

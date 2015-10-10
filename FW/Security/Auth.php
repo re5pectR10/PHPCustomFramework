@@ -1,6 +1,9 @@
 <?php
 
-namespace FW;
+namespace FW\Security;
+
+use FW\App;
+use FW\Database\DB;
 
 class Auth {
 

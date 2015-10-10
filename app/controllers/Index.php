@@ -6,7 +6,7 @@ use FW\View;
 class Index {
     public function index2(){        
 
-        View::make('test')
+        View\View::make('test')
             ->with('username', 'aaaaaaaazzzzzzzz')
             //->appendTemplateToLayout('body','admin.index')
             //->appendTemplateToLayout('body2','index')

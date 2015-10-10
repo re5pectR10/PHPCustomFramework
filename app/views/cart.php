@@ -1,4 +1,10 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+use \FW\HTML\Form;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -9,7 +15,7 @@
 
                 <h1>Your Cart</h1>
                 <h2>Your Cash: <?= $user_cash ?></h2>
-                <a class="btn btn-success" href="<?= \FW\Common::getBaseURL() ?>/user/cart/buy">Buy</a>
+                <a class="btn btn-success" href="<?= Common::getBaseURL() ?>/user/cart/buy">Buy</a>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -24,16 +30,16 @@
                     foreach($products as $item):
                     ?>
                         <tr>
-                            <td><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $item['id'] ?>"><?= $item['name'] ?></a></td>
+                            <td><a href="<?= Common::getBaseURL() ?>/product/<?= $item['id'] ?>"><?= $item['name'] ?></a></td>
                             <td>
-                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL() . '/user/cart/product/' . $item['id'] . '/quantity')) ?>
-                                <?= \FW\Form::text(array('value' => $item['cart_quantity'], 'name' => 'quantity')) ?>
-                                <?= \FW\Form::submit(array('value' => 'Change', 'name' => 'submit')) ?>
-                                <?= \FW\Form::close() ?>
+                                <?= Form::open(array('action' => Common::getBaseURL() . '/user/cart/product/' . $item['id'] . '/quantity')) ?>
+                                <?= Form::text(array('value' => $item['cart_quantity'], 'name' => 'quantity')) ?>
+                                <?= Form::submit(array('value' => 'Change', 'name' => 'submit')) ?>
+                                <?= Form::close() ?>
                             </td>
                             <td class="price"><?= $item['price'] * $item['cart_quantity'] ?></td>
                             <td>
-                                <a class="btn btn-danger" href="<?= \FW\Common::getBaseURL() ?>/user/cart/product/<?= $item['id'] ?>/remove">Remove</a>
+                                <a class="btn btn-danger" href="<?= Common::getBaseURL() ?>/user/cart/product/<?= $item['id'] ?>/remove">Remove</a>
                             </td>
                         </tr>
                     <?php
@@ -49,7 +55,7 @@
                     </tr>
                     </tfoot>
                 </table>
-                <p class="alert-danger"><?= \FW\Session::hasError() ? \FW\Session::getError() : '' ?></p>
+                <p class="alert-danger"><?= Session::hasError() ? Session::getError() : '' ?></p>
             </div>
 
         </div>
@@ -78,4 +84,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

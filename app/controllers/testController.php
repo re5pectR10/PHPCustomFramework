@@ -13,7 +13,7 @@ class testController{
         $r=new Index();
         $ra = new uuu();
         $r->aeee = 'stani e';
-        View::useType(array('Controllers\Admin\Index'))->make('test', array('model'=>$r))->render();
+        View\View::useType(array('Controllers\Admin\Index'))->make('test', array('model'=>$r))->render();
         //View::useType(array('Controllers\Admin\Index'))->make('test', array('model'=>$r,'wrong' => $ra))->render();
     }
 } 

@@ -3,10 +3,10 @@
 namespace Controllers;
 
 
-use FW\Auth;
-use FW\Redirect;
-use FW\Session;
-use FW\Validation;
+use FW\Security\Auth;
+use FW\Helpers\Redirect;
+use FW\Session\Session;
+use FW\Security\Validation;
 
 class CommentController {
 

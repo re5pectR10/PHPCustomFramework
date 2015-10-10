@@ -1,5 +1,5 @@
 <?php
-use FW\DependencyProvider;
+use FW\Helpers\DependencyProvider;
 
 DependencyProvider::inject('Controllers\CategoryController', 'category', null, 'Models\Category');
 DependencyProvider::inject('Controllers\CategoryController', 'product', null, 'Models\Product');
