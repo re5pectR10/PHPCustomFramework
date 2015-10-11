@@ -47,6 +47,13 @@ class ProductController {
             }
         }
 
+//        $val=new Validation();
+//        $val->setRule('matches',3,4,'az');
+//        $val->setRule('different',6,6,'min');
+//        $val->setRule('afterDate','10/10/2010','10/10/2011','date');
+//        $val->setRule('required','',null,'username')->validate();
+//var_dump($val->getErrors());
+
         View::make('index', $result);
         if (Auth::isAuth()) {
             View::appendTemplateToLayout('topBar', 'top_bar.user');

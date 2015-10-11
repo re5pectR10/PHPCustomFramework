@@ -2,15 +2,17 @@
 
 namespace FW\Security;
 
+use FW\App;
+
 class Validation {
 
     private $_rules = array();
     private $_errors = array();
-    private $msgs = array(
-        'required' => ' is required',
-        'email' => ' is not a valid email',
-        'date' => ' wrong date format'
-    );
+    private $msgs;
+
+    public function __construct() {
+        $this->msgs = App::getInstance()->getConfig()->validation;
+    }
 
     public function setRule($rule, $value, $params = null, $name = null) {
         $this->_rules[] = array('val' => $value, 'rule' => $rule, 'par' => $params, 'name' => $name);
@@ -22,21 +24,20 @@ class Validation {
         if (count($this->_rules) > 0) {
             foreach ($this->_rules as $v) {
                 if (!$this->$v['rule']($v['val'], $v['par'])) {
-                    $errorMsg = '';
-                    if ($v['name']) {
-                        $errorMsg .= $v['name'];
-                    }
-                    if (array_key_exists($v['rule'], $this->msgs)) {
-                        $errorMsg .= $this->msgs[$v['rule']];
-                    } else {
-                        $errorMsg .= ' ' . $v['rule'];
-                    }
 
-                    $this->_errors[] = $errorMsg;
+                    $this->_errors[] = $this->createErrorMessage($this->msgs[$v['rule']], array('NAME' => $v['name'], 'VALUE' => $v['val'], 'PARAM' => $v['par']));
                 }
             }
         }
         return (bool) !count($this->_errors);
+    }
+
+    private function createErrorMessage($message, array $variables = array()) {
+        foreach($variables as $key => $value){
+            $message = str_replace('{'.strtoupper($key).'}', $value, $message);
+        }
+
+        return $message;
     }
 
     public function getErrors() {
@@ -63,7 +64,11 @@ class Validation {
         return $val1 === $val2;
     }
 
-    static public function date($date)
+    public static function image($val1) {
+        return (bool) exif_imagetype($val1);
+    }
+
+    public static function date($date)
     {
         return (\DateTime::createFromFormat('Y-m-d', $date) !== false);
     }
@@ -139,6 +144,18 @@ class Validation {
 
     public static function regexp($val1, $val2) {
         return (bool) preg_match($val2, $val1);
+    }
+
+    public static function activeURL($val1) {
+        return checkdnsrr($val1);
+    }
+
+    public static function afterDate($val1, $val2) {
+        return strtotime($val1) > strtotime($val2);
+    }
+
+    public static function beforeDate($val1, $val2) {
+        return strtotime($val1) < strtotime($val2);
     }
 
     public static function custom($val1, $val2) {
