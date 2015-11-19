@@ -1,4 +1,10 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+use \FW\HTML\Form;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -7,13 +13,13 @@
 
             <div class="col-md-12">
 
-                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL().'/user/login')) ?>
-                <?= \FW\Form::text(array('name' => 'username', 'placeholder' => 'username')) ?>
-                <?= \FW\Form::password(array('name' => 'password', 'placeholder' => 'password')) ?>
-                <?= \FW\Form::submit(array('name' => 'submit', 'value' => 'Log In')) ?>
-                <?= \FW\Form::close() ?>
+                <?= Form::open(array('action' => Common::getBaseURL().'/user/login')) ?>
+                <?= Form::text(array('name' => 'username', 'placeholder' => 'username')) ?>
+                <?= Form::password(array('name' => 'password', 'placeholder' => 'password')) ?>
+                <?= Form::submit(array('name' => 'submit', 'value' => 'Log In')) ?>
+                <?= Form::close() ?>
                 <p class="alert-danger">
-                    <?= \FW\Session::getError() ?>
+                    <?= Session::getError() ?>
                 </p>
             </div>
 
@@ -43,4 +49,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

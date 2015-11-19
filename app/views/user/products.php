@@ -1,4 +1,10 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\Session\Session;
+use \FW\HTML\Form;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -25,17 +31,17 @@
                     foreach($products as $item):
                         ?>
                         <tr>
-                            <td><a href="<?= \FW\Common::getBaseURL() ?>/product/<?= $item['id'] ?>"><?= $item['name'] ?></a></td>
+                            <td><a href="<?= Common::getBaseURL() ?>/product/<?= $item['id'] ?>"><?= $item['name'] ?></a></td>
                             <td><?= $item['quantity'] ?></td>
                             <td><?= $item['bought_price'] ?></td>
                             <td class="price"><?= number_format($item['bought_price'] * $item['quantity'], 2) ?></td>
                             <td><?= $item['bought_on'] ?></td>
                             <td><?= $item['current_price'] ?></td>
                             <td>
-                                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL() . '/user/product/' . $item['id'] . '/sell/' . $item['user_product_id'])) ?>
-                                <?= \FW\Form::text(array('name' => 'quantity')) ?>
-                                <?= \FW\Form::submit(array('value' => 'Sell', 'name' => 'submit', 'class' => 'btn btn-success')) ?>
-                                <?= \FW\Form::close() ?>
+                                <?= Form::open(array('action' => Common::getBaseURL() . '/user/product/' . $item['id'] . '/sell/' . $item['user_product_id'])) ?>
+                                <?= Form::text(array('name' => 'quantity')) ?>
+                                <?= Form::submit(array('value' => 'Sell', 'name' => 'submit', 'class' => 'btn btn-success')) ?>
+                                <?= Form::close() ?>
                             </td>
                         </tr>
                     <?php
@@ -43,7 +49,7 @@
                     ?>
                     </tbody>
                 </table>
-                <p class="alert-danger"><?= \FW\Session::hasError() ? \FW\Session::getError() : '' ?></p>
+                <p class="alert-danger"><?= Session::hasError() ? Session::getError() : '' ?></p>
             </div>
 
         </div>
@@ -72,4 +78,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>

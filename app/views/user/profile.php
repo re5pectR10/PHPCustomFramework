@@ -1,4 +1,9 @@
-<?= \FW\View::getLayoutData('header') ?>
+<?php
+use \FW\View\View;
+use \FW\Helpers\Common;
+use \FW\HTML\Form;
+?>
+<?= View::getLayoutData('header') ?>
 
     <!-- Page Content -->
     <div class="container">
@@ -7,13 +12,13 @@
 
             <div class="col-md-12">
 
-                <?= \FW\Form::open(array('action' => \FW\Common::getBaseURL().'/user')) ?>
-                <?= \FW\Form::text(array('name' => 'username', 'value' => $user['username'], ' disabled' => 'true')) ?>
-                <?= \FW\Form::text(array('name' => 'email', 'value' => $user['email'])) ?>
-                <?= \FW\Form::password(array('name' => 'new_password', 'placeholder' => 'New Password')) ?>
-                <?= \FW\Form::password(array('name' => 'password', 'placeholder' => 'Current Password')) ?>
-                <?= \FW\Form::submit(array('name' => 'submit', 'value' => 'Change In')) ?>
-                <?= \FW\Form::close() ?>
+                <?= Form::open(array('action' => Common::getBaseURL().'/user')) ?>
+                <?= Form::text(array('name' => 'username', 'value' => $user['username'], ' disabled' => 'true')) ?>
+                <?= Form::text(array('name' => 'email', 'value' => $user['email'])) ?>
+                <?= Form::password(array('name' => 'new_password', 'placeholder' => 'New Password')) ?>
+                <?= Form::password(array('name' => 'password', 'placeholder' => 'Current Password')) ?>
+                <?= Form::submit(array('name' => 'submit', 'value' => 'Change In')) ?>
+                <?= Form::close() ?>
             </div>
 
         </div>
@@ -42,4 +47,4 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-<?= \FW\View::getLayoutData('footer') ?>
+<?= View::getLayoutData('footer') ?>
